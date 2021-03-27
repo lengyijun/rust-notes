@@ -15,4 +15,12 @@ Rc<Mutex<T>>
 使用Rc表面是单线程。单线程下，不能使用Mutex。
 应该用Rc<RefCell<T>>
 
+RefCell<Box<T>>
+应该可以用Box<T> 代替
+
+Box<T> 提供可变性
+RefCell<T> 也提供可变性
+看不出有什么意义
+
+但是 Rc<RefCell<Box<T>>> 倒是可能有用处的
 
