@@ -8,6 +8,8 @@ let address:usize=&s as *const i32 as usize;
 
 Box<T>的地址称为 outer_address, T的地址称为 inner_address
 
+outer_address 在 stack 上，inner_address 在 heap 上
+
 ```rust
 fn main() {
     let b = Box::new([0; 10]);
@@ -31,10 +33,10 @@ fn main() {
 
 
 
-直接cast只能得到Box的外部地址，想要获得Box的内部地址，我只想出来用marco来做
+直接cast只能得到Box的外部地址，想要获得Box的内部地址，可以用marco来做
 
 
-```
+```rust
 // 一个没什么用的macro,虽然也可以用
 // 把 {:p} 打印出来的，转成u64
 macro_rules! getAddress {
