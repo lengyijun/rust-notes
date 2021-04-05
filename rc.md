@@ -89,3 +89,33 @@ println!("{}{}", (*a).borrow()[0], (*a).borrow()[1]);
 | RefCell<T>                  | stack          |
 | MaybeUninit<T>              | stack          |
 
+
+Rc Rrc 容易循环引用，导致无法释放
+Rust不保证析构函数一定会被调用。所以用Rc构造出循环引用是算在safe里面的，而不是unsafe
+类似的safe,但又不是很safe的事情有 `process::exit`, 同样不会调用析构函数。
+
+```
+/// 用 `cargo run` 跑不会报错，但是用 `cargo miri run` 会报错
+
+use std::rc::Rc;
+use std::cell::RefCell;
+
+struct S {
+    x: Option<Rc<RefCell<S>>>,
+}
+
+impl Drop for S{
+    fn drop(&mut self){
+        println!("drop");
+    }
+}
+
+fn main() {
+    let a = Rc::new(RefCell::new(S { x: None }));
+    let b = Rc::new(RefCell::new(S { x: None }));
+
+    a.borrow_mut().x=Some(b.clone() );
+    b.borrow_mut().x=Some(a.clone() );
+
+}
+```

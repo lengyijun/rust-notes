@@ -14,23 +14,34 @@ outer_address 在 stack 上，inner_address 在 heap 上
 fn main() {
     let b = Box::new([0; 10]);
     let outer_address: u64 = &b as *const Box<[i32; 10]> as u64;
-    // 从Rust源码中借鉴过来的
-    // impl Pointer for Box
-    let inner_address: u64 = {
-        let c: *const [i32; 10] = &**(&b);
-        c as u64
-    };
-
     println!("{:x}", outer_address);
+
+    let inner_address: u64 =  &*b as *const [i32;10] as u64;
     println!("{:x}", inner_address);
-    println!("{:p}", b);
 
     // 验证inner_address
+    println!("{:p}", b);
     let ptr = Box::into_raw(b);
     println!("{:p}", ptr);
 }
 ```
 
+```rust
+fn main() {
+    let x = Box::new(1);
+    // stack
+    println!("{:p}", &x);
+    let outer_address = &x as *const Box<i32> as u64;
+    println!("0x{:x}", outer_address);
+
+    // heap
+    println!("{:p}", x);
+    println!("{:p}", &*x);
+
+    let a = &*x as *const i32 as usize;
+    println!("0x{:x}", a);
+}
+```
 
 
 直接cast只能得到Box的外部地址，想要获得Box的内部地址，可以用marco来做

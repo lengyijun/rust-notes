@@ -18,5 +18,32 @@ fn main() {
 ```
 
 为什么不直接用vec？
-因为不太喜欢
+因为不太喜欢,vec 能拓展长度，用slice表明不能拓展长度
+
+
+```
+#![feature(box_syntax)]
+
+fn main() {
+    {
+        // [i32;12] implement Copy
+        let a = [0; 12];
+        println!("{:p}", &a);
+        // will copy here
+        let b = a;
+        // so address are different
+        println!("{:p}", &b);
+    }
+
+    {
+        // Box not implement Copy
+        // print same address
+        let a = box [0; 12];
+        println!("{:p}", a);
+        let b = a;
+        println!("{:p}", b);
+    }
+}
+
+```
 

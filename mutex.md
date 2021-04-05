@@ -13,6 +13,7 @@
 
 
 ```rust
+/// `cargo miri run` can detect this deadlock
 use std::sync::Mutex;
 
 // deadlock example
