@@ -47,6 +47,8 @@ fn main() {
 直接cast只能得到Box的外部地址，想要获得Box的内部地址，可以用marco来做
 
 
+Box获得的地址就是里面的地址
+
 ```rust
 // 一个没什么用的macro,虽然也可以用
 // 把 {:p} 打印出来的，转成u64
@@ -57,5 +59,17 @@ macro_rules! getAddress {
         let z: u64 = u64::from_str_radix(&address, 16).unwrap();
         z
     }};
+}
+
+fn main() {
+    let b = Box::new([0; 10]);
+    let address = getAddress!(b);
+    println!("{}", address);
+    println!("{:p}", b);
+
+    let ptr = Box::into_raw(b);
+    let address = getAddress!(ptr);
+    println!("{}", address);
+    println!("{:p}", ptr);
 }
 ```
