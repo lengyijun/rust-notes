@@ -44,3 +44,12 @@ fn main() {
      println!("{:p}",d);
 }
 ```
+
+还有种方法快速获得裸指针
+
+```
+#![feature(raw_ref_op)]
+
+let a=12;
+let ptr:*const i32 = &raw const a;
+```
