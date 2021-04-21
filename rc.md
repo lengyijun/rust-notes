@@ -61,6 +61,22 @@ fn main() {
 
 ```
 
+或者用一个macro代替
+```
+macro_rules! rc {
+    ($a:expr) => {{
+        let b = box $a;
+        let c;
+        unsafe {
+            c = Rc::from_raw(Box::leak(b));
+        }
+        c
+    }};
+}
+
+let a = rc!([0; 5 << 20]);
+
+```
 
 另一种写法，就更加复杂了
 
@@ -82,8 +98,6 @@ println!("{}{}", (*a).borrow()[0], (*a).borrow()[1]);
 | Rc<[u8;1<<20]>              | heap           |
 | Rc<Vec<u8>>                 | heap           |
 | Arc<[u8;1<<20]>             | heap           |
-| Rc<Box<[u8;1<<20]>>         | heap           |
-| Arc<Box<[u8;1<<20]>>        | heap           |
 | Arc<Mutex<Box<[u8;1<<20]>>> | heap           |
 | Arc<Vec<u8>>                | heap           |
 | RefCell<T>                  | stack          |
