@@ -1,0 +1,50 @@
+
+let a:&'1 i32=&'2 b;
+'2:'1 (reads tick 2 outlive tick 1)
+
+|       | nll                                | polonius                    |
+| '1    | part of code(lines)                | set of loans                |
+| '2:'1 | '1 is subset of '2(in line number) | '2 is subset of '1(in loan) |
+|       | '1 = {#1,#2}                       | '1={Loan 1,Loan 2}          |
+|       | '2 = {#1,#2,#3}                    | '2={Load 2}                 |
+|       | (#1 denote line 1)                 |                             |
+
+```
+/*1/ let x=&'1 25;
+/*2/ let y=&'2 36;
+/*3/ let z:&'3 i32 = if ____ { x }else{ y };
+/*4/ 
+/*5/ println!("{}",z);
+/*6/ println!("{}",x);
+/*7/ println!("{}",y);
+```
+
+// always true, either in nll and polonius
+'1:'3
+'2:'3
+
+if nll view:
+'1={#1,#2,#3,#4,#5,#6}   // I don't know I should include #1. We must extend to #6 because use of x at #6
+'2={#2,#3,#4,#5,#6,#7}
+'3={#3,#4,#5}
+
+In this example: '3 is subset of '1; '3 is subset of '2; It works!
+
+
+In polonius view.
+First we remove line number, because line number doesn't matter in polonius.
+
+```
+let x=&'1 25;  // L1
+let y=&'2 36;  // L2
+let z:&'3 i32 = if ____ { x }else{ y };
+
+println!("{}",z);
+println!("{}",x);
+println!("{}",y);
+```
+
+'1 is {L1}
+'2 is {L2}
+'3 is {L1,L2}   //because '3 come from either '1 or '2
+

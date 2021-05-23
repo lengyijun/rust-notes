@@ -17,12 +17,6 @@ let x:u8=z-b'a';
 
 ```rust
 // 写法2
-let z:char='z';
-let x:u32=z.to_digit().unwrap()-'a'.to_digit().unwrap();
-```
-
-```rust
-// 写法3
 let a:i32='a' as i32 - 'a' as i32;
 ```
 

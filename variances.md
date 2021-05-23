@@ -56,7 +56,7 @@ fn replace<T>(x:&mut T,y:&T){
 }
 
 fn main(){
-	let mut x:&'staic str="";
+	let mut x:&'static str="";
 	{
 		let y="hello";
 		replace(&mut x,&y);
