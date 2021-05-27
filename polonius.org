@@ -48,3 +48,11 @@ println!("{}",y);
 '2 is {L2}
 '3 is {L1,L2}   //because '3 come from either '1 or '2
 
+
+
+对于任何lifetime 'a, 都有
+'static:’a
+从polonius的角度，'static={} ,是个空集合，是任何集合的子集. 
+这有点匪夷所思，从直觉上讲 static 应该是全集。
+从NLL的角度，'static 是全集，任何集合都是 'static 的子集
+
