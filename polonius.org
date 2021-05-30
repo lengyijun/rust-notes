@@ -56,3 +56,77 @@ println!("{}",y);
 这有点匪夷所思，从直觉上讲 static 应该是全集。
 从NLL的角度，'static 是全集，任何集合都是 'static 的子集
 
+-----------------------
+polonius除了影响引用外，还会影响带lifetime标记的struct
+
+```
+1:  struct ImportantExcerpt<'a> {
+2:      part: &'a str,
+3:  }
+4:  
+5:  fn main() {
+6:      let novel = String::from("Call me Ishmael. Some years ago...");
+7:      let first_sentence = novel.split('.').next().expect("Could not find a '.'");   //L1
+8:      let i = ImportantExcerpt {
+9:         part: first_sentence,
+10:     };
+11:     drop(novel);
+12:     println!("{:?}",i);
+13: }
+```
+如果把 first_sentence 的引用标记成L1，那么 i 依赖于L1。 
+由于 i 活到第12行，所以 L1 也活到12行， loan_live_at(12,L1);
+但是 novel 11行就死了， drop(novel,11)
+
+连带着 load_dead(novel,11)
+所以会报错
+
+```
+struct ImportantExcerpt<'a,'b> {
+   parta: &'a str,
+   partb: &'b u32,
+}
+```
+在这个例子中，struct有两个lifetime泛型。表示 ImportantExcept 活着的依赖条件是  'a U 'b('a 和 'b 的并集)。
+如果 'a 中任意一个Loan 失效了，或者 'b 中任意一个Loan失效了，都会导致 ImporttantExcept活着的条件不满足， ImportantExcept也立即死去。
+
+从这个例子还可以看出，polonius里origin（Loan的集合）是可以包含不用类型的Loan的。比如上面， 'a 这个Loan 是 str，'b 这个 Loan 是u32
+
+
+* Lifetime Elision 与 polonius
+Lifetime Elision 的3条规则允许缺省lifetime的时候，compiler能自动推到一些lifetime，而不会报错。
+在polonius后，Lifetime Elision 依然适用。
+首先注意你完全可以绕开Lifetime Elision。只要手动标记所有lifetime和他们之间的运算规则就可以了。
+
+Rule 1 说的是每个lifetime会单独的标记，这个没问题。
+Rule 2 说的是如果输入只有一个lifetime，那么输出默认跟着这个lifetime。这是必然的，否则还能跟谁。
+这个返回变量必然是和输入lifetime有关的，否则一定是个局部变量的应用。
+既然有关，那么相关的Loan一定有依赖关系。
+
+Rule 3 说如果参数中有 &self, &mut self, 那么返回lifetime跟着 &self, &mut self 走。
+这个有点奇怪，但是我们可以不理他。如果返回值与 &self, &mut self 没有关系，我们手工标记好lifetime就可以了。
+
+
+我们先准备一个.rs
+```
+rustc -Znll-facts issue-47680.rs
+```
+
+他的输出按函数，分为几个文件夹。
+polonius在分析的时候，是以一个文件夹作为输入的，所以polonius是单个函数进行分析的。
+
+那在遇到函数调用的时候，应该生成什么规则喂给polonius呢？
+如果传入参数都是抽象的，那不是会遇到全称量词的问题了？
+
+需要注意，rustc中的polonius和github上polonius可能版本不一致，许多文件名都改了。
+
+
+polonius 分析的时候导致是 context-sensitive的，还是 context-free 的？
+
+context-free:
+每个函数都单独生成一个文件夹，说明polonius的输入只有一个函数的信息
+从博客看，polonius可以依照形式参数进行分析
+
+context-sensitive:
+那你就把规则写出来啊
+
