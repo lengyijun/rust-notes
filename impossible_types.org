@@ -2,9 +2,9 @@
 
 
 
-| 错误写法     | 正确写法        |                                                                      |                      |
-| Arc<Cell>    | Arc<RefCell>    | 混用多线程和单线程的类型<br/>Send,Sync问题，编译不过的               |                      |
-| Cell<Box<T>> | RefCell<Box<T>> | 可以编译，但是不能调用他的get() 方法，因为Copy trait的语速           | todo                 |
-| Rc<Box<T>>   | Rc<T>           | Rc<T>和Box<T>都在堆上分配，直接写成Rc<T> 就可以了                    | redundant_allocation |
-| Arc<Box<T>>  | Arc<T>          | Arc<T>和Box<T>都在堆上分配，直接写成Arc<T> 就可以了                  | todo                 |
-| Rc<Mutex<T>> | Rc<RefCell<T>>  | 混用多线程和单线程的类型<br/>在单线程下使用Mutex是危险的，会造成死锁 | todo                 |
+| 错误写法     | 正确写法        |                                                                      |                            |
+| Cell<Box<T>> | RefCell<Box<T>> | 可以编译，但是不能调用他的get() 方法，因为Copy trait的语速           | todo                       |
+|              |                 |                                                                      | 但是要检查泛型参数，有点难 |
+| Rc<Box<T>>   | Rc<T>           | Rc<T>和Box<T>都在堆上分配，直接写成Rc<T> 就可以了                    | redundant_allocation       |
+| Arc<Box<T>>  | Arc<T>          | Arc<T>和Box<T>都在堆上分配，直接写成Arc<T> 就可以了                  | todo                       |
+| Rc<Mutex<T>> | Rc<RefCell<T>>  | 混用多线程和单线程的类型<br/>在单线程下使用Mutex是危险的，会造成死锁 | todo                       |
