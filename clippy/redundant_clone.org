@@ -1,0 +1,71 @@
+# redundant_clone 的实现思路
+1. 遍历basic block
+basic block的特点是只有最后一行是函数调用。
+包括clone,只可能发生在basic block的最后一行。
+
+2. 检查basic block的最后一行是不是clone.
+如果是clone,我们假定他长成这样：
+```
+_2=cloned=local: T
+_3=arg: &T
+_4=clone=clone_ret=ret_local: T
+
+
+_3=& _2;
+_4=T::clone(move _3);
+```
+
+
+
+3. 分析 _2 和 _4 的未来使用情况
+为什么不分析_3: _3 已经move了，一定不会用了
+_2 的跟踪变量是 cloned_used, cloned_consume_or_mutate_loc
+_4 的跟踪变量是 clone_consumed_or_mutated
+
+| cloned_used | cloned_consume_or_mutate_loc | clone_consumed_or_mutated |                 |                                              |
+| true        | -                            | true                      | continue(210)   | -                                            |
+| true        | Some()                       | false                     | ?               | cloned value is neither consumed nor mutated |
+| false       | Some()                       | true                      | impossible      | -                                            |
+| false       | Some()                       | false                     | impossible      | -                                            |
+| true        | None                         | false                     | should lint     | cloned value is neither consumed nor mutated |
+| false       | None                         | true                      | 203             | this value is dropped without further use    |
+| false       | None                         | false                     | should lint (*) | this value is dropped without further use    |
+
+# redundant_clone 有一个bug：
+https://github.com/rust-lang/rust-clippy/issues/5707
+
+我写了一个能复现的例子：
+```
+use std::collections::HashSet;
+
+fn main() {
+    let p = String::new();
+
+    let mut h: HashSet<&str> = HashSet::new();
+    h.insert( &p);
+
+    let q = p.clone();
+
+    drop(h);
+}
+```
+
+似乎原因是没有成功追踪 p 的一个引用的lifetime还活着，以为p已经没用了，直接把p move 到 q 就可以了
+是上面表格中的最后一行(*)
+这一行少考虑了一种情况： 尽管 cloned 没有使用，更改和移动，但是他的引用还活着
+
+但是我又写了一个例子，这次clippy赢了
+
+```
+struct S<'a>(&'a str);
+
+fn main() {
+    let a=String::new();
+    let s=S(&a);
+    let mut b=a.clone();
+    b.push('b');
+    drop(s);
+}
+```
+
+在这个例子中，a的引用活到了最后一行，所以a不能 move 到b。 但是这次 clippy 检查出来了，不知道为什么？
