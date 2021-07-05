@@ -1,0 +1,25 @@
+* redundant_clone
+
+这个issue发现了一个问题，redundant_clone 会检查某个变量是不是temp. temp表示是编译器引入的变量。
+但我觉得检查不应该依赖于变量是否是局部的。
+
+```
+fn foo()->String{
+  let s=String::new();
+  //replace here
+  return s;
+}
+```
+
+| replace               | clippy |                |
+| s.to_string();        | 误报   | 引入了temp     |
+| let _=s.to_string();  | 误报   | 把_ 当作了temp |
+| let _s=s.to_string(); | 不报   | 没有temp       |
+| let a=s.to_string();  | 不报   | 没有temp       |
+
+
+一度怀疑问题和_0 return value 有关，好在后面实验发现没有关系
+
+** How to fix?
+现有的方案本质上还是在打补丁。就算修好这个issue,以后还会有别的issue
+根除的方法，我觉得是用polonius
