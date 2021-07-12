@@ -1,0 +1,11 @@
+| _#0r     | origin | RegionVid     |
+| bw0      | borrow | BorrowIndex   |
+| mp4      | path   | MovePathIndex |
+| point    |        | LocationIndex |
+| Variable |        | Local         |
+
+
+```
+# can generate `origin` information in .dot format
+rustc -Zdump-mir="all" -Zdump-mir-dataflow main.rs
+```
