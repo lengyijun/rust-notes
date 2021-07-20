@@ -33,6 +33,9 @@ loan不是孤立的存在的。一个Loan 一生出来就有一个Origin包住�
 `output::var_dropped_at(var, point)`
 `output::var_used_at(var, point)`
 `initialization::var_maybe_partly_initialized_on_exit`
+`liveness::var_live_on_entry(var, point)`
+`liveness::var_maybe_partly_initialized_on_entry(var, point2)`
+`liveness::var_drop_live_on_entry(var, point)`
 
 # (point, loan)
 `output::loan_invalidated_at(point, loan)`
@@ -50,3 +53,5 @@ loan不是孤立的存在的。一个Loan 一生出来就有一个Origin包住�
 # (origin,origin)
 `output::known_subset(origin,origin)`
 
+# (origin,point)
+`liveness::origin_live_on_entry`
