@@ -115,18 +115,15 @@ rustc -Znll-facts issue-47680.rs
 他的输出按函数，分为几个文件夹。
 polonius在分析的时候，是以一个文件夹作为输入的，所以polonius是单个函数进行分析的。
 
-那在遇到函数调用的时候，应该生成什么规则喂给polonius呢？
+** 那在遇到函数调用的时候，应该生成什么规则喂给polonius呢？
+`subset_base`
 如果传入参数都是抽象的，那不是会遇到全称量词的问题了？
 
-需要注意，rustc中的polonius和github上polonius可能版本不一致，许多文件名都改了。
-
-
-polonius 分析的时候导致是 context-sensitive的，还是 context-free 的？
-
-context-free:
+* polonius 分析的时候导致是 context-sensitive的，还是 context-free 的？
+context-free的:
 每个函数都单独生成一个文件夹，说明polonius的输入只有一个函数的信息
 从博客看，polonius可以依照形式参数进行分析
 
-context-sensitive:
-那你就把规则写出来啊
+flow sensitive
+context insensitive
 

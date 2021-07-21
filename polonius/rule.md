@@ -1,57 +1,70 @@
+在liveness 中， 没有 path 的rule
+在borrow check中，没有 path 和 variable 的rule
+
 loan不是孤立的存在的。一个Loan 一生出来就有一个Origin包住他了
 不会有 (Loan,Loan) 这种规则
 
+contain: origin 与 loan 的关系
+subset： origin 与 origin 的关系
+`_base`: 表示只有直接的边相连，没有间接边相连
 
-# (point,point)
-`output::cfg_edge(point1, point2)`
+# `_#0r` `_#1r` 总是出现在 placeholder 和 `universal_region` 里面，他们是什么？
+`_#0r`:`_#1r`
+并且他们对应的placeholder是特别的，最后统一加上去的，不会在别的地方用到
 
-# (path,path)
-`output::child_path(child, parent)`
-`initialization::ancestor_path(Parent, Child)`
+origin 只记录live,不记录死亡。 所以origin总是增加的。
+`loan_invalidated_at` 用来做最后的错误判断，并不参与规则的扩散
 
-# (path,point)
-`output::path_accessed_at_base(path, point)`
-`output::path_assigned_at_base(path, point)`
-`output::path_moved_at_base(path, point)`
-`initialization::path_accessed_at(path, point)`
-`initialization::path_assigned_at(path, point)`
-`initialization::path_moved_at(path, point)`
-`initialization::path_maybe_initialized_on_exit(path, point)`
-`initialization::path_maybe_uninitialized_on_exit(path, point)`
-`initialization::move_error(Path, point)`
+var 和 origin 的关系是确定的
+origin 和 origin 的关系是动态的。origin 和 loan 的关系也是动态的
 
-# (path,var)
-`output::path_is_var(path, var)`
-`initialization::path_begins_with_var(path, var)`
 
-# (var,origin)
-`output::drop_of_var_derefs_origin(var, origin)`
-`output::use_of_var_derefs_origin(variable, origin)`
+```
+drop(a);
+drop(a.0);  // move error
+```
 
-# (var,point)
-`output::var_defined_at(var, point)`
-`output::var_dropped_at(var, point)`
-`output::var_used_at(var, point)`
-`initialization::var_maybe_partly_initialized_on_exit`
-`liveness::var_live_on_entry(var, point)`
-`liveness::var_maybe_partly_initialized_on_entry(var, point2)`
-`liveness::var_drop_live_on_entry(var, point)`
+```
+drop(a.0);  
+drop(a);   // move error
+```
 
-# (point, loan)
-`output::loan_invalidated_at(point, loan)`
-`output::loan_killed_at(loan, point)`
+```
+drop(a.0);
+a=S{}    // ok
+```
 
-# (origin, loan, point)
-`output::loan_issued_at(origin, loan, point)`
+```
+drop(a);
+a.0=S{}   // partial move error
+```
 
-# (origin,loan)
-`output::placeholder(origin, loan)`
 
-# (origin,origin,point)
-`output::subset_base(origin1, origin2, point)`
+整个函数的入口是 `path_moved_at` ，给每个path一个空值，这样可以检查到这些空值会流到什么地方，检查出未定义的变量（move error）
+在polonius中，使用未初始化的变成是 move error
 
-# (origin,origin)
-`output::known_subset(origin,origin)`
+"drop live" is a superset of "use live" 
 
-# (origin,point)
-`liveness::origin_live_on_entry`
+`partial initialization` 可能会在polonius中被支持
+
+
+`move_error` 与 `&` 无关
+`error` 与 `&` 有关
+
+-------------------
+
+```
+_1=& _2;
+```
+emit:
+```
+loan_issued_at()
+path_accessed_at()
+path_assigned_at()
+```
+`_1` 关联的Origin在这一刻不是live的
+
+-------------------
+
+`origin_live_on_entry(origin,point)` 中的origin,一定来自于 ` use_of_var_derefs_origin` 或者 `drop_of_var_derefs_origin`
+

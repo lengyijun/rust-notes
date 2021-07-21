@@ -1,0 +1,19 @@
+| Type          | +Send only if | +Sync only if |
+| Vec<T>        | T:Send        | T:Sync        |
+| &mut T        | T:Send        | T:Sync        |
+| &T            | T:Sync        | T:Sync        |
+| Cell<T>       | T:Send        | -             |
+| RefCell<T>    | T:Send        | -             |
+| AtomicT       | always        | always        |
+| Mutex<T>      | T:Send        | T:Send        |
+| MutexGuard<T> | -             | T:Send        |
+| RwLock<T>     | T:Send        | T:Send+Sync   |
+| Rc<T>         | -             | -             |
+| Arc<T>        | T:Send+Sync   | T:Send+Sync   |
+|               |               |               |
+| u8,usize,..   | always(move)  | always        |
+| Box<T>        | T:Send        | T:Sync        |
+| Option<T,E>   | T:Send,E:Send |               |
+|               |               |               |
+
+

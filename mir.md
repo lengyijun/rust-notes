@@ -19,3 +19,6 @@ cargo rustc  -- --emit mir
 
 所以在debug下，运行会报错，但是release模式下不会报错
 
+
+mir 中看不到是不是unsafe。unsafe只能在hir中判断
+

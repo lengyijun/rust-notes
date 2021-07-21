@@ -1,0 +1,69 @@
+# `&*` 和 先* 再&
+结论： &* 要比 先* 再& 好很多。 &* 不消耗变量，先*再& 根据是不是Copy会有不同的表现，可能会消耗变量
+
+&*T
+
+| *X            |       |                        |
+| *(&T),T:Copy  | ok    | copy                   |
+| *(&T),T:!Copy | error |                        |
+| *(Box<_>)     | ok    |                        |
+| *(T),T:Deref  | ok    | `*a=*Deref::deref(&a)` |
+
+对 `Box<T>` 先*再&
+无论T有没有Copy,总是可以的。
+像Box这种有Deref的类型，
+*a=*Deref::deref(&a);
+也就是说，回退到*(&T)
+
+
+有些&* 可以替代为 &
+```
+let s:String=String::new();
+let a:&String=&s;
+// let a:&String=&*s; // error
+let a:&str=&s;
+let a:&str=&*s;
+```
+
+Deref: T->U
+```
+a:&T
+a as &U = &**a
+```
+
+`*&`, `*& mut` 都是不必要的，`deref_addrof` lint on it
+
+
+在 tokio ， igore 里面还有 `&***`
+
+
+```
+fn main() {
+    // Arc<PathBuf> -> PathBuf -> Path
+    use std::path::Path;
+    use std::path::PathBuf;
+    use std::sync::Arc;
+
+    let a = Arc::new(PathBuf::new());
+
+    let b: &PathBuf = &a;   // 推荐
+    let b: &PathBuf = &*a;  // 推荐
+    let b: &PathBuf = &**(&a);
+    let b: &PathBuf = &a as &PathBuf;
+
+    let c: &Path = &**a;   // 推荐
+    let c: &Path = &***(&a);
+    let c: &Path = &a as &PathBuf as &Path;
+}
+```
+
+
+
+T->U1->U2
+| &*(T)    | &U1 |
+| &**(&T)  | &U1 |
+| &***(&T) | &U2 |
+
+*& 可以抵消
+&* 不能抵消
+

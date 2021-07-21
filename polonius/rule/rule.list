@@ -1,17 +1,3 @@
-loan不是孤立的存在的。一个Loan 一生出来就有一个Origin包住他了
-不会有 (Loan,Loan) 这种规则
-
-liveness 的时候，没有path
-borrow check 的时候，没有var和path
-
-contain: origin 与 loan 的关系
-subset： origin 与 origin 的关系
-`_base`: 表示只有直接的边相连，没有间接边相连
-
-在liveness 中， 没有 path 的rule
-在borrow check中，没有 path 和 variable 的rule
-
-
 # (point,point)
 `output::cfg_edge(point1, point2)`
 
