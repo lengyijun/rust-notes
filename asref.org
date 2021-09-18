@@ -1,0 +1,12 @@
+# asref and deref
+deref 专用于智能指针（https://rust-lang.github.io/api-guidelines/checklist.html）
+deref包含asref的功能。
+有deref就一定同时有asref
+asref可以有多个，deref只能有一个
+都可以作为函数参数和返回值，而且都挺常用的
+
+```
+fn foo<T: impl<AsRef<Target=[usize]>>>(x:T){}
+fn foo<T: impl<Deref<str>>>(x:T){}
+```
+
