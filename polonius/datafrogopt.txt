@@ -1,0 +1,11 @@
+无论是datafrogopt还是naive，核心都是算出loan活了多久。
+naive中loan活了多久，会有大量冗余的规则，
+比如 
+origin_contain_loan_on_entry(o1,l,point)
+origin_contain_loan_on_entry(o2,l,point)
+
+其实o1，o2只要有一个活着，让l活下去就够了，不用两条fact都记录
+
+所以datafrogopt就类似于一个loan就让一个活的origin带着。
+如果这个origin快死了，就找个继承人接着带。
+

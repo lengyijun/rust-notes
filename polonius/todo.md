@@ -51,6 +51,31 @@ placeholder
 怎么想出来的?
 如何证明和naive是等价的？
 
-# const fn
+# vec
+Vec<&S> 一定包含Origin，那么如果Vec pop一下，会不会把origin去掉呢？
+能不能构造出一些问题呢？
+
+# 如果参数里有一堆&&&&，那会不会有一大堆placeholder
+
+
+`dying_can_reach_origins(o,point1,point2)` 为什么不用更加直接的方式生成
+```
+dying_can_reach_origins(o,point1,point2):-
+  origin_live_at(o,point1),
+  !origin_live_at(o,point2),
+  cfg_edge(point1,point2)
+```
+
+# origin 能不能从死到活？
+
+```
+a=&1;
+a;
+// origin a dead
+a=&2;  // origin a live again
+a;
+```
+
+# const fn                 
 const fn 和polonius什么关系？
 

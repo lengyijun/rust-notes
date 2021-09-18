@@ -1,0 +1,51 @@
+Q1: 如何生成这样的情况
+point1:  origin live
+  |
+  |
+point2:  origin dead
+
+Answer: 
+
+// a 包含origin
+point1: let _ = &a; // visit a
+                    // visit origin
+point2 and later: on longer use a
+
+要让origin失效，只要不再访问他
+要让origin失效，只要不再访问所有包含origin的变量
+
+Q2:  如何让外部的origin失效，而里面的origin不失效
+
+![outerdying](./img/outer-dying.drawio.png)
+
+s2 让a的origin活着，
+s1不再使用之后，s1的origin就死了
+但s1里的a的origin还活着，造成父亲死了，儿子还活着的情况
+
+Q3:  如何让里面的origin失效，而外面的origin不失效
+
+更严谨的表述。上一时刻还是我的儿子，我和儿子都活着
+下一时刻儿子死了，但我还活着。当然我和儿子也不再是subset的关系（subset要求父子都是活的）
+
+
+![innerdying](./img/inner-dying.drawio.png)
+
+Q4：  dead的origin会活过来吗？
+这种问题非常奇怪。答案是当然不会。
+origin只在最后一次使用到定义阶段是活的。
+
+Q5: 能drop一个变量，来让origin失效吗？
+drop确实能让origin失效，不过原因不是drop，而是drop之后不会再有访问，origin不再live，所以失效了
+
+Q6: subset(o1,o2,point) 中o1，o2是否一定是活的？
+o1（小） 活
+o2（大） 不一定
+subset_base(o1,o2,point) 中o1，o2不保证活
+
+
+Q7: loan_issued_at(o,l,point) 中， o是否一定是活的？
+不一定。可能后来没有没用过
+因此，origin_contain_loan_on_entry 也不能保证origin是活的。
+
+TODO 要不要排除这种以后没用过的场合？
+

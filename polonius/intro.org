@@ -127,3 +127,10 @@ context-free的:
 flow sensitive
 context insensitive
 
+
+polonius 既有反向的规则传播（liveness），也有正向的传播，比如subset
+
+* 原则
+对于一个loan，要记录所有包含这个loan的origin。因为任何一个origin都可能失效
+
+
