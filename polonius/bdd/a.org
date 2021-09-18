@@ -1,0 +1,2 @@
+| project(x_i) | t[0/x_i] V t[1/x_i] | placeholder(o1,l1) -> o1 | 抹去真值表中的一列 |
+|              |                     |                          |                    |

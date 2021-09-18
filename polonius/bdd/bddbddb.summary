@@ -1,0 +1,18 @@
+# 效率
+有的时候挺快，有的时候不怎么样。
+遇到过1个小时跑不完的情况。
+subset(o1,o3,p):-subset(o1,o2,p),subset(o2,o3,p)
+
+# 交互式命令行
+`save xxx` 比较奇怪，执行顺序会影响结果。
+但只要 `save a,b,c` 把所有的output都写上去,就可以
+
+# 优点
+能handle Location::all
+用在origin_live_on_entry(origin,point):-placeholder(origin,_)
+但是 Location::all 已经有人在做了
+
+而且polonius还在解决正确性问题，还不关心效率问题
+
+https://www.youtube.com/watch?v=-KZY15tItgQ&ab_channel=MicrosoftResearch
+

@@ -1,0 +1,34 @@
+Currently polonius suffer from:
+1. Huge memory print
+2. Slow in some cases
+
+I accidently notice binary decision diagram help solve them.
+AFAIK, no discussion about bdd and polonius before.
+I pick bddbddb, a java program.
+I feed the nll-facts and polonius rules into bddbddb, it solves them automatically.
+
+Test on naive algorithm:
+
+|                                       | datafrog | bddbddb |
+| issue-29466.rs                        | >30min   | 60s     |
+| issue-29540.rs                        | ?        | ?       |
+| issue-74564-if-expr-stack-overflow.rs | >1h      | >1h     |
+| clap                                  | ?        | 1h      |
+
+
+# Why bddbddb works well with polonius
+Redundant relation in point, which can be compressed by bdd.
+
+# How to make bddbddb work even faster on polonius?
+1. parallel
+2. the variable order(NP problem), relation order
+A lot of experiments
+3. some features in bddbddb: relation split 
+
+# Future work
+1. fix issue-74564-if-expr-stack-overflow.rs 
+2. Test on other algorithm
+3. Rewrite bddbddb in Rust
+
+## Reference:
+bddbddb: http://bddbddb.sourceforge.net/
