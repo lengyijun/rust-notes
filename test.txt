@@ -1,0 +1,3 @@
+src/test/ui/borrowck/borrowck-anon-fields-variant.rs
+不同的Path上mut不可以吗？
+
