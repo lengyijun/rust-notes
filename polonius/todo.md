@@ -51,3 +51,6 @@ placeholder
 怎么想出来的?
 如何证明和naive是等价的？
 
+# const fn
+const fn 和polonius什么关系？
+
