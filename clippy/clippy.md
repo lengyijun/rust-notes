@@ -46,3 +46,10 @@ struct S<'a>{
 }
 ```
 
+
+### `to_string_in_display`
+结构体里存储着状态，用`check_item`, `check_item_post` 控制，很有意思。
+
+### `boxed_local`
+如何做到的？
+
