@@ -24,3 +24,10 @@ loan_issued_at(loan,origin,point) 时，不能得到 origin_live_on_entry(point,
 subset_base(point,o1,o2) 不保证 origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
 subset(point,o1,o2) 不保证 origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
 
+
+无论datafrog_opt还是naive,都有以下：
+loan_live_at(l,point),
+loan_issued_at(point,o,l)
+
+loan_issued_at的point,loan是死的（surprise！）
+
