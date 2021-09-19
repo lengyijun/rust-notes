@@ -1,0 +1,26 @@
+# datafrog_opt
+
+origin_contain_loan_on_entry(point,origin,loan) 不保证 origin_live_on_entry(point,origin)
+  原因是origin_contain_loan_on_entry(point,origin,loan):-loan_issued_at(point,origin,loan)
+  另外，如果 origin_contain_loan_on_entry(point,origin,loan) 保证 origin_live_on_entry(point,origin)
+  那么 loan_live_at(origin,loan,point):-
+          origin_live_on_entry(point,origin),
+          origin_contain_loan_on_entry(point,origin,loan)
+      就没有意义
+
+loan_issued_at(loan,origin,point) 中，loan只会出现一次。
+loan和 origin都是fresh的
+loan_issued_at(loan,origin,point) 时，不能得到 origin_live_on_entry(point,origin). // 根据实验得到
+                                      也不能得到loan_live_at(point,loan), 要看有没有祖父origin活着
+                                      总之loan_issued_at 不能说明任何事，只是给出了一个fresh的loan和一个fresh的origin
+
+
+就算 !origin_live_on_entry(point,origin)，也不代表origin是死的，因为origin的父亲可能是活的，但是没有计算规则计算到儿子也是活的。 
+
+所以死活有多种定义：
+1. 有父亲（subset关系）还活着
+2. 存在fact： origin_live_on_entry(point,origin)
+
+subset_base(point,o1,o2) 不保证 origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
+subset(point,o1,o2) 不保证 origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
+
