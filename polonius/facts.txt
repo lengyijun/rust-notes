@@ -13,6 +13,8 @@ loan和 origin都是fresh的
 loan_issued_at(loan,origin,point) 时，不能得到 origin_live_on_entry(point,origin). // 根据实验得到
                                       也不能得到loan_live_at(point,loan), 要看有没有祖父origin活着
                                       总之loan_issued_at 不能说明任何事，只是给出了一个fresh的loan和一个fresh的origin
+loan_issued_at(loan,origin,point), 会invalidate一堆其他loan,但不会invalidate自己。
+所以生成loan_live_at(loan,point) 也没用
 
 
 就算 !origin_live_on_entry(point,origin)，也不代表origin是死的，因为origin的父亲可能是活的，但是没有计算规则计算到儿子也是活的。 
@@ -22,7 +24,9 @@ loan_issued_at(loan,origin,point) 时，不能得到 origin_live_on_entry(point,
 2. 存在fact： origin_live_on_entry(point,origin)
 
 subset_base(point,o1,o2) 不保证 origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
-subset(point,o1,o2) 不保证 origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
+
+subset(point,o1,o2) 有三个来源，只有subset_base 不保证origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
+  其他两个来源都保证 origin_live_on_entry(point,o1) 和 origin_live_on_entry(point,o2) 
 
 
 无论datafrog_opt还是naive,都有以下：
@@ -31,3 +35,7 @@ loan_issued_at(point,o,l)
 
 loan_issued_at的point,loan是死的（surprise！）
 
+DatafrogOpt::subset(o1,o2,point)<=
+	Naive::subset(o1,o2,point)
+DatafrogOpt::origin_contain_loan_at(o,l,point)<=
+	Naive::origin_contain_loan_at(o,l,point)
