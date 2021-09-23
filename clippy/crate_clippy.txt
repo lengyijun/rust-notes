@@ -1,0 +1,3 @@
+lazy_static => once_cell
+complicate polymorphic function => momo
+

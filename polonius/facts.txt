@@ -39,3 +39,7 @@ DatafrogOpt::subset(o1,o2,point)<=
 	Naive::subset(o1,o2,point)
 DatafrogOpt::origin_contain_loan_at(o,l,point)<=
 	Naive::origin_contain_loan_at(o,l,point)
+
+origin_live_on_entry 中的origin，必然与var绑定。
+其他中间origin都是工具人，不配活着
+
