@@ -92,7 +92,7 @@ datafrog_opt_origin_contain_loan_on_entry Origin  Loan  Point  :=
 datafrog_opt_origin_contain_loan_on_entry Origin  Loan  Point2  :=
   exists Point1,
   datafrog_opt_origin_contain_loan_on_entry Origin  Loan  Point1  /\
-  loan_killed_at Loan  Point1  -> false /\
+  (loan_killed_at Loan  Point1  -> false) /\
   cfg_edge Point1  Point2  /\
   origin_live_on_entry Origin  Point2 ;
 
@@ -182,4 +182,21 @@ Theorem Axiom1:
   datafrog_opt_origin_contain_loan_on_entry Origin2 Loan Point2 ->
   forall Origin3, loan_issued_at Origin3 Loan Point2 -> false.
 skip.
+
+Theorem Lemma5:
+  forall Loan,
+  forall Origin1,
+  forall Point,
+  (forall Origin2, loan_issued_at Origin2 Loan Point -> false) /\
+  datafrog_opt_origin_contain_loan_on_entry Origin1 Loan Point ->
+  origin_live_on_entry Origin1 Point .
+intros.
+case H1.
+case H3.
+apply H2 to H4.
+search.
+case H5.
+search.
+
+         
 
