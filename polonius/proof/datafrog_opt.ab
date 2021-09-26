@@ -177,26 +177,38 @@ Theorem Axiom1:
   forall Origin1,
   forall Origin2,
   forall Loan, 
-  cfg_edge Point1 Point2 /\
-  datafrog_opt_origin_contain_loan_on_entry Origin1 Loan Point1 /\
-  datafrog_opt_origin_contain_loan_on_entry Origin2 Loan Point2 ->
-  forall Origin3, loan_issued_at Origin3 Loan Point2 -> false.
+  (cfg_edge Point1 Point2) ->
+  (datafrog_opt_origin_contain_loan_on_entry Origin1 Loan Point1) ->
+  (datafrog_opt_origin_contain_loan_on_entry Origin2 Loan Point2) ->
+  (forall Origin3, loan_issued_at Origin3 Loan Point2 -> false).
 skip.
 
 Theorem Lemma5:
   forall Loan,
   forall Origin1,
   forall Point,
-  (forall Origin2, loan_issued_at Origin2 Loan Point -> false) /\
-  datafrog_opt_origin_contain_loan_on_entry Origin1 Loan Point ->
-  origin_live_on_entry Origin1 Point .
+  (forall Origin2, loan_issued_at Origin2 Loan Point -> false) ->
+  (datafrog_opt_origin_contain_loan_on_entry Origin1 Loan Point) ->
+  (origin_live_on_entry Origin1 Point) .
 intros.
-case H1.
-case H3.
-apply H2 to H4.
+case H2.
+apply H1 to H3.
 search.
-case H5.
+case H4.
 search.
 
-         
+Theorem Lemma4:
+  forall Point1, 
+  forall Point2,
+  forall Origin1, 
+  forall Origin2, 
+  forall Loan, 
+  (cfg_edge Point1 Point2) ->
+  (datafrog_opt_origin_contain_loan_on_entry Origin1 Loan Point1) ->
+  (datafrog_opt_origin_contain_loan_on_entry Origin2 Loan Point2) ->
+  (origin_live_on_entry Origin2 Point2) .
+intros.
+apply Axiom1 to H1 H2 H3.
+apply Lemma5 to H4 H3.
+search.
 
