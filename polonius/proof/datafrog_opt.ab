@@ -3,43 +3,118 @@ Kind loan type.
 Kind point type.
 
 /* input */
-Type origin_live_on_entry point -> origin -> prop.
-Type loan_issued_at point -> origin -> loan -> prop.
+Type origin_live_on_entry origin -> point -> prop.
+Type loan_issued_at origin -> loan -> point -> prop.
 Type cfg_edge point -> point -> prop.
-Type loan_invalidated_at point -> loan -> prop.
-Type loan_killed_at point -> loan -> prop.
-Type subset_base origin -> origin -> prop.
+Type loan_invalidated_at loan -> point -> prop.
+Type loan_killed_at loan -> point -> prop.
+Type subset_base origin -> origin -> point -> prop.
 
-Define dead_borrow_region_can_reach_root: point -> origin -> loan -> prop by 
-dead_borrow_region_can_reach_root Point Origin Loan :=  
-  loan_issued_at Point Origin Loan /\ origin_live_on_entry Point Origin -> false.
 
-Define dead_borrow_region_can_reach_dead: point -> origin -> loan -> prop by
-dead_borrow_region_can_reach_dead Point Origin Loan :=
-  dead_borrow_region_can_reach_root Point Origin Loan;
-dead_borrow_region_can_reach_dead Point Origin1 Loan :=
+Define dead_borrow_region_can_reach_root: origin -> point -> loan -> prop ,
+       dead_borrow_region_can_reach_dead: origin -> point -> loan -> prop,
+       dying_region_requires: origin -> point -> point -> loan -> prop ,
+       live_to_dying_regions: origin -> origin -> point -> point -> prop ,
+       dying_can_reach_origins: origin -> point -> point -> prop ,
+       dying_can_reach: origin  -> origin -> point -> point -> prop,
+       dying_can_reach_live: origin -> origin -> point -> point -> prop ,
+       subset: origin -> origin -> point -> prop,
+       origin_contains_loan_on_entry: origin -> loan -> point -> prop,
+       loan_live_at: loan -> point -> prop,
+       errors: loan -> point -> prop by
+
+dead_borrow_region_can_reach_root Origin Point Loan :=
+  loan_issued_at Origin  Loan  Point /\
+  origin_live_on_entry Origin  Point -> false ;
+
+dead_borrow_region_can_reach_dead Origin Point Loan :=
+  dead_borrow_region_can_reach_root Origin Point Loan;
+
+dead_borrow_region_can_reach_dead  Origin2  Point  Loan  :=
+  exists Origin1,
+  dead_borrow_region_can_reach_dead Origin1  Point  Loan  /\
+  subset Origin1  Origin2  Point  /\
+  origin_live_on_entry Origin2  Point -> false;
+
+dying_region_requires Origin  Point1  Point2  Loan  :=
+  origin_contains_loan_on_entry Origin  Loan  Point1   /\
+  loan_killed_at Loan  Point1  -> false /\
+  cfg_edge Point1  Point2  /\
+  origin_live_on_entry Origin  Point2 -> false;
+
+live_to_dying_regions Origin1  Origin2  Point1  Point2  :=
+  subset Origin1  Origin2  Point1  /\
+  cfg_edge Point1  Point2  /\
+  origin_live_on_entry Origin1  Point2  /\
+  origin_live_on_entry Origin2  Point2 -> false;
+
+dying_can_reach_origins Origin2  Point1  Point2  :=
+  exists Origin1,
+  live_to_dying_regions Origin1  Origin2  Point1  Point2 ;
+
+dying_can_reach_origins Origin  Point1  Point2  :=
+  exists Loan,
+  dying_region_requires Origin  Point1  Point2  Loan ;
+
+dying_can_reach Origin1  Origin2  Point1  Point2  :=
+  dying_can_reach_origins Origin1  Point1  Point2 /\ 
+  subset Origin1  Origin2  Point1 ;
+
+dying_can_reach Origin1  Origin3  Point1  Point2  :=
   exists Origin2,
-  dead_borrow_region_can_reach_dead Origin1 Loan Point /\
-  subset Origin1 Origin2 Point /\
-  origin_live_on_entry Origin2 Point -> false .
+  dying_can_reach Origin1  Origin2  Point1  Point2   /\
+  origin_live_on_entry Origin2  Point2 -> false /\ 
+  subset Origin2  Origin3  Point1 ;
 
-Define dying_region_requires: origin -> point -> point -> loan -> prop by                                                                                       
-dying_region_requires Origin Point1 Point2 Loan :=
-  origin_contains_loan_on_entry Origin Loan Point1 /\
-  loan_killed_at Loan Point1 -> false /\
-  cfg_edge Point1 Point2 /\
-  origin_live_on_entry Origin Point2 -> false.
+dying_can_reach_live Origin1  Origin2  Point1  Point2  :=
+  dying_can_reach Origin1  Origin2  Point1  Point2   /\
+  origin_live_on_entry Origin2  Point2 ;
 
-Define live_to_dying_regions:origin -> origin -> point -> point -> prop by
-live_to_dying_regions Origin1 Origin2 Point1 Point2 :=
-  subset Origin1 Origin2 Point1) /\
-  cfg_edge Point1 Point2 /\
-  origin_live_on_entry Origin1 Point2 /\
-  origin_live_on_entry Origin2 Point2 -> false.
+subset Origin1  Origin2  Point  :=
+  subset_base Origin1  Origin2  Point ;
 
-Define dying_can_reach_origins: origin -> point -> point -> prop by
-  dying_can_reach_origins Origin2 Point1 Point2 := exists Origin1, live_to_dying_regions Origin1 Origin2 Point1 Point2;
-  dying_can_reach_origins Origin Point1 Point2 := exist Loan, dying_region_requires Origin Point1 Point2 Loan.
+subset Origin1  Origin2  Point2  :=
+  exists Point1,
+  subset Origin1  Origin2  Point1   /\
+  cfg_edge Point1  Point2  /\
+  origin_live_on_entry Origin1  Point2   /\
+  origin_live_on_entry Origin2  Point2 ;
 
-/* 用skip引入公理 */
+subset Origin1  Origin3  Point2  :=
+  exists Point1,
+  exists Origin2,
+  live_to_dying_regions Origin1  Origin2  Point1  Point2  /\
+  dying_can_reach_live Origin2  Origin3  Point1  Point2 ;
+
+origin_contains_loan_on_entry Origin  Loan  Point  :=
+  loan_issued_at Origin  Loan  Point ;
+
+origin_contains_loan_on_entry Origin  Loan  Point2  :=
+  exists Point1,
+  origin_contains_loan_on_entry Origin  Loan  Point1  /\
+  loan_killed_at Loan  Point1  -> false /\
+  cfg_edge Point1  Point2  /\
+  origin_live_on_entry Origin  Point2 ;
+
+origin_contains_loan_on_entry Origin2  Loan  Point2  :=
+  exists Point1,
+  exists Origin1,
+  dying_region_requires Origin1  Point1  Point2  Loan  /\
+  dying_can_reach_live Origin1  Origin2  Point1  Point2 ;
+
+loan_live_at Loan  Point  :=
+  exists Origin,
+  origin_contains_loan_on_entry Origin  Loan  Point  /\
+  origin_live_on_entry Origin  Point ;
+
+loan_live_at Loan  Point  :=
+  exists Origin1,
+  exists Origin2,
+  dead_borrow_region_can_reach_dead Origin1  Point  Loan  /\
+  subset Origin1  Origin2  Point  /\
+  origin_live_on_entry Origin2  Point ;
+
+errors Loan  Point  :=
+  loan_invalidated_at Loan  Point  /\
+  loan_live_at Loan  Point .
 
