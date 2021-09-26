@@ -212,3 +212,16 @@ apply Axiom1 to H1 H2 H3.
 apply Lemma5 to H4 H3.
 search.
 
+Theorem Lemma3:
+  forall Origin1,
+  forall Loan,
+  forall Point,
+  (naive_origin_contains_loan_on_entry Origin1 Loan Point ) ->
+  (origin_live_on_entry Origin1 Point ) ->
+  ( 
+   exists Origin2,
+   (datafrog_opt_origin_contain_loan_on_entry Origin2 Loan Point ) /\
+   (origin_live_on_entry Origin2 Point)
+  ).
+intros.
+
