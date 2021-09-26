@@ -1,0 +1,45 @@
+Kind origin type.
+Kind loan type.
+Kind point type.
+
+/* input */
+Type origin_live_on_entry point -> origin -> prop.
+Type loan_issued_at point -> origin -> loan -> prop.
+Type cfg_edge point -> point -> prop.
+Type loan_invalidated_at point -> loan -> prop.
+Type loan_killed_at point -> loan -> prop.
+Type subset_base origin -> origin -> prop.
+
+Define dead_borrow_region_can_reach_root: point -> origin -> loan -> prop by 
+dead_borrow_region_can_reach_root Point Origin Loan :=  
+  loan_issued_at Point Origin Loan /\ origin_live_on_entry Point Origin -> false.
+
+Define dead_borrow_region_can_reach_dead: point -> origin -> loan -> prop by
+dead_borrow_region_can_reach_dead Point Origin Loan :=
+  dead_borrow_region_can_reach_root Point Origin Loan;
+dead_borrow_region_can_reach_dead Point Origin1 Loan :=
+  exists Origin2,
+  dead_borrow_region_can_reach_dead Origin1 Loan Point /\
+  subset Origin1 Origin2 Point /\
+  origin_live_on_entry Origin2 Point -> false .
+
+Define dying_region_requires: origin -> point -> point -> loan -> prop by                                                                                       
+dying_region_requires Origin Point1 Point2 Loan :=
+  origin_contains_loan_on_entry Origin Loan Point1 /\
+  loan_killed_at Loan Point1 -> false /\
+  cfg_edge Point1 Point2 /\
+  origin_live_on_entry Origin Point2 -> false.
+
+Define live_to_dying_regions:origin -> origin -> point -> point -> prop by
+live_to_dying_regions Origin1 Origin2 Point1 Point2 :=
+  subset Origin1 Origin2 Point1) /\
+  cfg_edge Point1 Point2 /\
+  origin_live_on_entry Origin1 Point2 /\
+  origin_live_on_entry Origin2 Point2 -> false.
+
+Define dying_can_reach_origins: origin -> point -> point -> prop by
+  dying_can_reach_origins Origin2 Point1 Point2 := exists Origin1, live_to_dying_regions Origin1 Origin2 Point1 Point2;
+  dying_can_reach_origins Origin Point1 Point2 := exist Loan, dying_region_requires Origin Point1 Point2 Loan.
+
+/* 用skip引入公理 */
+
