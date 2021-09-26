@@ -118,3 +118,56 @@ datafrog_opt_errors Loan  Point  :=
   loan_invalidated_at Loan  Point  /\
   datafrog_opt_loan_live_at Loan  Point .
 
+
+
+
+
+Define  subset: origin -> origin -> point -> prop,
+        origin_contains_loan_on_entry: origin -> loan -> point -> prop,
+        loan_live_at: loan -> point -> prop,
+        errors: loan -> point -> prop  by
+
+subset Origin1  Origin2  Point  :=
+  subset_base Origin1  Origin2  Point ;
+
+subset Origin1  Origin2  Point2  :=
+  exists Point1,
+  subset Origin1  Origin2  Point1 /\
+  cfg_edge Point1  Point2 /\
+  origin_live_on_entry Origin1  Point2 /\
+  origin_live_on_entry Origin2  Point2 ;
+
+subset Origin1  Origin3  Point  :=
+  exists Origin2,
+  subset Origin1  Origin2  Point /\
+  subset Origin2  Origin3  Point ;
+
+origin_contains_loan_on_entry Origin Loan Point  :=
+  loan_issued_at Origin Loan Point ;
+
+/* origin_contains_loan_on_entry Origin Loan Point  := */
+  /* cfg_node Point   */
+  /* placeholder_Loan Origin  Loan ; */
+
+origin_contains_loan_on_entry Origin2  Loan  Point  :=
+  exists Origin1,
+  origin_contains_loan_on_entry Origin1  Loan  Point /\
+  subset Origin1  Origin2  Point ;
+
+origin_contains_loan_on_entry Origin  Loan  Point2  :=
+  exists Point1,
+  origin_contains_loan_on_entry Origin  Loan  Point1 /\
+  loan_killed_at Loan  Point1 -> false /\
+  cfg_edge Point1  Point2 /\
+  origin_live_on_entry Origin  Point2 ;
+
+loan_live_at Loan  Point  :=
+  exists Origin,
+  origin_contains_loan_on_entry Origin  Loan  Point /\
+  origin_live_on_entry Origin  Point ;
+
+errors Loan  Point  :=
+  loan_invalidated_at Loan  Point /\
+  loan_live_at Loan  Point .
+
+
