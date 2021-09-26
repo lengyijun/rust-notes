@@ -171,3 +171,15 @@ naive_errors Loan  Point  :=
   naive_loan_live_at Loan  Point .
 
 
+Theorem Axiom1: 
+  forall Point1, 
+  forall Point2,
+  forall Origin1,
+  forall Origin2,
+  forall Loan, 
+  cfg_edge Point1 Point2 /\
+  datafrog_opt_origin_contain_loan_on_entry Origin1 Loan Point1 /\
+  datafrog_opt_origin_contain_loan_on_entry Origin2 Loan Point2 ->
+  forall Origin3, loan_issued_at Origin3 Loan Point2 -> false.
+skip.
+
