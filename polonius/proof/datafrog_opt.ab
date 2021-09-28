@@ -294,23 +294,27 @@ apply IH to H4.
 search.
 
 
-
-
-
-
-
-
-
-
-
-/*
 Theorem Lemma26:
-  forall Point, 
-  forall Origin, 
-  forall Loan, 
-  (datafrog_opt_origin_contain_loan_on_entry Origin Loan Point ) ->
-  (naive_origin_contains_loan_on_entry Origin Loan Point ) .
-*/
+  forall Origin,
+  forall Loan,
+  forall Point,
+  ( datafrog_opt_origin_contain_loan_on_entry Origin Loan Point ) ->
+  ( naive_origin_contains_loan_on_entry Origin Loan Point ).
+induction on 1.
+intros.
+case H1.
+search.
+apply IH to H2.
+search.
+case H2.
+apply IH to H4.
+case H3.
+case Lemma24.
+apply H12 to H9.
+search.
+
+
+
 
 
 /*
