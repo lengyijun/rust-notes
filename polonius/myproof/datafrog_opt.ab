@@ -233,7 +233,7 @@ my_origin_contains_loan_on_entry Origin Loan Point  :=
 my_origin_contains_loan_on_entry Origin2  Loan  Point  :=
   exists Origin1,
   my_origin_contains_loan_on_entry Origin1  Loan  Point /\
-  my_subset Origin1  Origin2  Point .
+  datafrog_opt_subset Origin1  Origin2  Point .
 
 Theorem Axiom2: 
   forall Origin,
@@ -437,7 +437,7 @@ apply IH1 to H1 H2 H9 H6 H4.
 search.
 
 
-Theorem NaiveSubset2MySubset:
+Theorem SubsetNaive2My:
   forall Point2,
   forall Origin1,
   forall Origin9,
@@ -463,4 +463,95 @@ apply IH to H2.
 apply IH to H3.
 apply MySubsetConcat to H4 H5.
 search.
+
+
+Theorem MyOriginConcat:
+  forall Origin1,
+  forall Origin9,
+  forall Point,
+  forall Loan,
+  my_origin_contains_loan_on_entry Origin1 Loan Point ->
+  my_subset Origin1 Origin9 Point ->
+  my_origin_contains_loan_on_entry Origin9 Loan Point. 
+induction on 2.
+intros.
+case H2.
+search.
+assert my_origin_contains_loan_on_entry Origin2 Loan Point.
+apply IH to H5 H4.
+search.
+
+
+Theorem MyOriginPoint:
+(
+  forall Point1,
+  forall Point2,
+  forall Loan,
+  forall Origin9,
+  cfg_edge Point1 Point2 ->
+  my_origin_contains_loan_on_entry Origin9 Loan Point1 ->
+  origin_live_on_entry Origin9 Point2 ->
+  not_loan_killed_at Loan  Point1  ->
+  my_origin_contains_loan_on_entry Origin9 Loan Point2
+) /\ (
+  forall Point1,
+  forall Point2,
+  forall Loan,
+  forall Origin2,
+  forall Origin9,
+  cfg_edge Point1 Point2 ->
+  my_subset Origin2 Origin9 Point1 ->
+  my_origin_contains_loan_on_entry Origin2 Loan Point1 ->
+  origin_live_on_entry Origin9 Point2 ->
+  not_origin_live_on_entry Origin2 Point2 ->
+  not_loan_killed_at Loan  Point1  ->
+  my_origin_contains_loan_on_entry Origin9 Loan Point2
+).
+induction on 2 3.
+split.
+intros.
+case H2.
+search.
+apply Axiom2 with Origin = Origin1 , Point = Point2.
+assert my_subset Origin1 Origin9 Point1.
+case H7.
+apply IH to H1 H5 H9 H4.
+search.
+apply IH1 to H1 H8 H5 H3 H9 H4.
+search.
+intros.
+case H3.
+assert dying_region_requires Origin2 Point1 Point2 Loan.
+apply Lemma90 to H8 H2 H4.
+case H9.
+search.
+case MySubsetPoint.
+apply H13 to H1 H12 H11 H4.
+assert my_origin_contains_loan_on_entry Origin5 Loan Point2.
+apply MyOriginConcat to H17 H16.
+search.
+
+
+
+
+
+
+
+/*
+Theorem OriginNaive2My:
+  forall Point2,
+  forall Origin1,
+  forall Origin9,
+  naive_origin_contains_loan_on_entry Origin1 Origin9 Point2 ->
+  my_origin_contains_loan_on_entry Origin1 Origin9 Point2.
+induction on 1.
+intros.
+case H1.
+search.
+apply IH to H2.
+apply SubsetNaive2My to H3.
+search.
+apply IH to H2.
+TODO waiting on MyOriginPoint.
+*/
 
