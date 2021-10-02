@@ -437,7 +437,6 @@ apply IH1 to H1 H2 H9 H6 H4.
 search.
 
 
-/*
 Theorem NaiveSubset2MySubset:
   forall Point2,
   forall Origin1,
@@ -452,5 +451,16 @@ apply IH to H2.
 case H6.
 search.
 apply Axiom2 with Origin = Origin2 , Point = Point2.
-*/
+case H9.
+case MySubsetPoint.
+apply H11 to H3 H8 H10 H5.
+search.
+assert live_to_dying_regions Origin1 Origin2 Point1 Point2.
+case MySubsetPoint.
+apply H14 to H3 H11 H8 H5.
+search.
+apply IH to H2.
+apply IH to H3.
+apply MySubsetConcat to H4 H5.
+search.
 
