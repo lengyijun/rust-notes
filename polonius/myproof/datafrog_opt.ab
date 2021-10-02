@@ -154,6 +154,62 @@ datafrog_opt_errors Loan  Point  :=
   datafrog_opt_loan_live_at Loan  Point .
 
 
+Define  naive_subset: origin -> origin -> point -> prop,
+        naive_origin_contains_loan_on_entry: origin -> loan -> point -> prop,
+        naive_loan_live_at: loan -> point -> prop,
+        naive_errors: loan -> point -> prop  by
+
+/* 1 */
+naive_subset Origin1  Origin2  Point  :=
+  subset_base Origin1  Origin2  Point ;
+
+/* 2 */
+naive_subset Origin1  Origin2  Point2  :=
+  exists Point1,
+  naive_subset Origin1  Origin2  Point1 /\
+  cfg_edge Point1  Point2 /\
+  origin_live_on_entry Origin1  Point2 /\
+  origin_live_on_entry Origin2  Point2 ;
+
+/* 3 */
+naive_subset Origin1  Origin3  Point  :=
+  exists Origin2,
+  naive_subset Origin1  Origin2  Point /\
+  naive_subset Origin2  Origin3  Point ;
+
+/* 4 */
+naive_origin_contains_loan_on_entry Origin Loan Point  :=
+  loan_issued_at Origin Loan Point ;
+
+/* naive_origin_contains_loan_on_entry Origin Loan Point  := */
+  /* cfg_node Point   */
+  /* placeholder_Loan Origin  Loan ; */
+
+/* 5 */
+naive_origin_contains_loan_on_entry Origin2  Loan  Point  :=
+  exists Origin1,
+  naive_origin_contains_loan_on_entry Origin1  Loan  Point /\
+  naive_subset Origin1  Origin2  Point ;
+
+/* 6 */
+naive_origin_contains_loan_on_entry Origin  Loan  Point2  :=
+  exists Point1,
+  (naive_origin_contains_loan_on_entry Origin  Loan  Point1) /\
+  (not_loan_killed_at Loan  Point1 ) /\
+  (cfg_edge Point1  Point2) /\
+  (origin_live_on_entry Origin  Point2) ;
+
+/* 7 */
+naive_loan_live_at Loan  Point  :=
+  exists Origin,
+  naive_origin_contains_loan_on_entry Origin  Loan  Point /\
+  origin_live_on_entry Origin  Point ;
+
+/* 8 */
+naive_errors Loan  Point  :=
+  loan_invalidated_at Loan  Point /\
+  naive_loan_live_at Loan  Point .
+
 
 
 Define  my_subset: origin -> origin -> point -> prop,
@@ -261,7 +317,7 @@ Theorem Lemma91:
     datafrog_opt_subset Origin0 Origin9 Point3 \/
     (
       exists Origin5,
-      datafrog_opt_subset Origin0 Origin5 Point3 \/
+      datafrog_opt_subset Origin0 Origin5 Point3 /\
       origin_live_on_entry Origin5 Point3 /\
       my_subset Origin5 Origin9 Point2
     )
@@ -278,3 +334,62 @@ apply Lemma92 to H9 H6 H3.
 case H10.
 search.
 search.
+
+
+Theorem MySubsetConcat:
+  forall Origin1,
+  forall Origin2,
+  forall Origin3,
+  forall Point,
+  my_subset Origin1 Origin2 Point ->
+  my_subset Origin2 Origin3 Point ->
+  my_subset Origin1 Origin3 Point. 
+induction on 1.
+intros.
+case H1.
+search.
+apply IH to H4 H2.
+search.
+
+
+Theorem MySubsetPoint:
+  forall Origin1,
+  forall Origin9,
+  forall Point1,
+  forall Point2,
+  cfg_edge Point1 Point2 ->
+  my_subset Origin1 Origin9 Point1 ->
+  origin_live_on_entry Origin1 Point2 ->
+  origin_live_on_entry Origin9 Point2 ->
+  my_subset Origin1 Origin9 Point2.
+induction on 2.
+intros.
+case H2.
+search.
+apply Axiom2 with Origin = Origin2 , Point = Point2.
+case H7.
+apply IH to H1 H6 H8 H4.
+search.
+assert live_to_dying_regions Origin1 Origin2 Point1 Point2.
+apply Lemma91 to H9 H6 H4.
+case H10.
+search.
+/* 遇到了熟悉的问题 */
+
+/*
+Theorem NaiveSubset2MySubset:
+  forall Point2,
+  forall Origin1,
+  forall Origin9,
+  naive_subset Origin1 Origin9 Point2 ->
+  my_subset Origin1 Origin9 Point2.
+induction on 1.
+intros.
+case H1.
+search.
+apply IH to H2.
+case H6.
+search.
+apply Axiom2 with Origin = Origin2 , Point = Point2.
+
+*/
