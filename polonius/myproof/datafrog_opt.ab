@@ -242,7 +242,6 @@ Theorem Axiom2:
 skip.
 
 
-
 Theorem Lemma92:
   forall Origin1,
   forall Origin2,
@@ -543,25 +542,22 @@ apply IH1 to H1 H11 H7 H4 H10 H6.
 search.
 
 
-
-
-
-
-/*
 Theorem OriginNaive2My:
   forall Point2,
-  forall Origin1,
   forall Origin9,
-  naive_origin_contains_loan_on_entry Origin1 Origin9 Point2 ->
-  my_origin_contains_loan_on_entry Origin1 Origin9 Point2.
+  forall Loan,
+  naive_origin_contains_loan_on_entry Origin9 Loan Point2 ->
+  my_origin_contains_loan_on_entry Origin9 Loan Point2.
 induction on 1.
 intros.
 case H1.
 search.
 apply IH to H2.
 apply SubsetNaive2My to H3.
+apply MyOriginConcat to H4 H5.
 search.
 apply IH to H2.
-TODO waiting on MyOriginPoint.
-*/
+case MyOriginPoint.
+apply H7 to H4 H6 H5 H3.
+search.
 
