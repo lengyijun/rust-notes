@@ -242,6 +242,7 @@ Theorem Axiom2:
 skip.
 
 
+
 Theorem Lemma92:
   forall Origin1,
   forall Origin2,
@@ -353,16 +354,43 @@ search.
 
 
 Theorem MySubsetPoint:
+(
+  forall Origin0,
+  forall Origin9,
+  forall Point1,
+  forall Point2,
+  cfg_edge Point1 Point2 ->
+  my_subset Origin0 Origin9 Point1 ->
+  origin_live_on_entry Origin0 Point2 ->
+  origin_live_on_entry Origin9 Point2 ->
+  my_subset Origin0 Origin9 Point2
+) /\ (
+  forall Origin0,
+  forall Origin1,
+  forall Origin2,
+  forall Origin9,
+  forall Point1,
+  forall Point2,
+  cfg_edge Point1 Point2 ->
+  live_to_dying_regions Origin0 Origin1 Point1 Point2 ->
+  dying_can_reach Origin1 Origin2 Point1 Point2 ->
+  my_subset Origin2 Origin9 Point1 ->
+  origin_live_on_entry Origin9 Point2 ->
+  my_subset Origin0 Origin9 Point2
+) /\ (
+  forall Origin0,
   forall Origin1,
   forall Origin9,
   forall Point1,
   forall Point2,
   cfg_edge Point1 Point2 ->
+  live_to_dying_regions Origin0 Origin1 Point1 Point2 ->
   my_subset Origin1 Origin9 Point1 ->
-  origin_live_on_entry Origin1 Point2 ->
   origin_live_on_entry Origin9 Point2 ->
-  my_subset Origin1 Origin9 Point2.
-induction on 2.
+  my_subset Origin0 Origin9 Point2
+).
+induction on 2 4 3.
+split.
 intros.
 case H2.
 search.
@@ -370,11 +398,44 @@ apply Axiom2 with Origin = Origin2 , Point = Point2.
 case H7.
 apply IH to H1 H6 H8 H4.
 search.
-assert live_to_dying_regions Origin1 Origin2 Point1 Point2.
-apply Lemma91 to H9 H6 H4.
-case H10.
+case H6.
+assert live_to_dying_regions  Origin0 Origin2 Point1 Point2.
+assert dying_can_reach Origin2 Origin9 Point1 Point2.
+assert dying_can_reach_live Origin2 Origin9 Point1 Point2.
 search.
-/* 遇到了熟悉的问题 */
+assert live_to_dying_regions  Origin0 Origin2 Point1 Point2.
+assert dying_can_reach Origin2 Origin1 Point1 Point2.
+apply IH1 to H1 H11 H12 H10 H4.
+search.
+intros.
+case H4.
+apply Axiom2 with Origin = Origin2 , Point = Point2.
+case H7.
+search.
+search.
+apply Axiom2 with Origin = Origin2 , Point = Point2.
+case H8.
+apply Axiom2 with Origin = Origin3 , Point = Point2.
+case H10.
+apply IH to H1 H7 H11 H5.
+search.
+assert live_to_dying_regions Origin2  Origin3 Point1 Point2.
+apply IH2 to H1 H12 H7 H5.
+search.
+assert dying_can_reach Origin1 Origin3 Point1 Point2.
+apply IH1 to H1 H2 H10 H7 H5.
+search.
+intros.
+case H3.
+search.
+apply Axiom2 with Origin = Origin2 , Point = Point2.
+case H7.
+apply IH to H1 H6 H8 H4.
+search.
+assert dying_can_reach Origin1 Origin2 Point1 Point2.
+apply IH1 to H1 H2 H9 H6 H4.
+search.
+
 
 /*
 Theorem NaiveSubset2MySubset:
@@ -391,5 +452,5 @@ apply IH to H2.
 case H6.
 search.
 apply Axiom2 with Origin = Origin2 , Point = Point2.
-
 */
+
