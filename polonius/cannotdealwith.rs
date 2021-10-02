@@ -12,3 +12,6 @@ fn main() {
     dbg!(v);
 }
 
+// another example 
+// https://github.com/rust-lang/rust/issues/70797
+//
