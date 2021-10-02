@@ -561,3 +561,82 @@ case MyOriginPoint.
 apply H7 to H4 H6 H5 H3.
 search.
 
+
+Theorem Lemma97:
+  forall Point,
+  forall Loan,
+  forall Origin1,
+  forall Origin9,
+  dead_borrow_region_can_reach_dead Origin1 Point Loan ->
+  my_subset Origin1 Origin9 Point ->
+  origin_live_on_entry Origin9 Point ->
+  datafrog_opt_loan_live_at Loan Point.
+induction on 2.
+intros.
+case H2.
+search.
+apply Axiom2 with Origin = Origin2 , Point = Point.
+case H6.
+search.
+assert dead_borrow_region_can_reach_dead Origin2 Point Loan.
+apply IH to H8 H5 H3.
+search.
+
+
+Theorem Lemma98:
+  forall Point,
+  forall Loan,
+  forall Origin1,
+  forall Origin9,
+  loan_issued_at Origin1 Loan Point ->
+  my_subset Origin1 Origin9 Point ->
+  origin_live_on_entry Origin9 Point ->
+  datafrog_opt_loan_live_at Loan Point.
+intros.
+apply Axiom2 with Origin = Origin1 , Point = Point.
+case H4.
+search.
+assert dead_borrow_region_can_reach_dead Origin1 Point Loan.
+apply Lemma97 to H6 H2 H3.
+search.
+
+
+
+
+/*
+Theorem Lemma99:
+  forall Origin9,
+  forall Loan,
+  forall Point,
+  my_origin_contains_loan_on_entry Origin9 Loan Point ->
+  origin_live_on_entry Origin9 Point ->
+  (
+    (
+      exists Origin5,
+      origin_live_on_entry Origin5 Point /\
+      datafrog_opt_origin_contains_loan_on_entry Origin5 Loan Point
+    ) \/ (
+      exists Origin1,
+      exists Origin2,
+      dead_borrow_region_can_reach_dead Origin1 Loan Point /\
+      datafrog_opt_subset Origin1 Origin2 Point  /\
+      origin_live_on_entry Origin2 Point 
+    )
+  ).
+  Lemma98 first
+*/
+
+/*
+Theorem Naive2DatafrogOpt:
+  forall Loan,
+  forall Point,
+  naive_errors Loan Point ->
+  datafrog_opt_errors Loan Point. 
+intros.
+case H1.
+case H3.
+apply OriginNaive2My to H4.
+unfold. 
+search.
+TODO wait for Lemma99
+*/
