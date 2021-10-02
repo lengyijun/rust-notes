@@ -649,12 +649,6 @@ apply IH1 to H5 H9 H8 H4.
 search.
 
 
-
-
-
-
-
-/*
 Theorem Naive2DatafrogOpt:
   forall Loan,
   forall Point,
@@ -666,5 +660,7 @@ case H3.
 apply OriginNaive2My to H4.
 unfold. 
 search.
-TODO wait for Lemma99
-*/
+case Lemma99.
+apply H7 to H6 H5.
+search.
+
