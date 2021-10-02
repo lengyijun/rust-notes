@@ -530,7 +530,17 @@ apply H13 to H1 H12 H11 H4.
 assert my_origin_contains_loan_on_entry Origin5 Loan Point2.
 apply MyOriginConcat to H17 H16.
 search.
-
+apply Axiom2 with Origin = Origin1 , Point = Point2.
+case H9.
+assert my_subset Origin1 Origin9 Point1.
+case MySubsetPoint.
+apply H12 to H1 H11 H10 H4.
+apply IH to H1 H7 H10 H6.
+apply MyOriginConcat to H16 H15.
+search.
+assert my_subset Origin1 Origin9 Point1.
+apply IH1 to H1 H11 H7 H4 H10 H6.
+search.
 
 
 
