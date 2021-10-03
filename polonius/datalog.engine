@@ -1,0 +1,17 @@
+swi
+scala
+
+gnu-prolog gprolog
+
+racket
+https://docs.racket-lang.org/datalog/Tutorial.html
+不过似乎没有否定语句？
+
+souffle (Rust is using)
+
+bddbddb
+用bdd的，
+Java
+
+https://github.com/vmware/differential-datalog
+
