@@ -1,0 +1,18 @@
+Rust的新的borrow checker叫做polonius,使用datalog实现。
+目前有两套datalog规则：naive和datafrog-opt.
+datafrog-opt比naive运行的快一点。
+
+我用abella 证明了datafrog-opt 和 naive是等价的。
+从datafrog-opt =》 naive不算太难
+naive=》 datafrog-opt 不太直观。我定义了一套中间规则，才让他们连接起来。
+
+证明的主要技巧是induction和多个规则同时induction。
+
+有了这个证明之后，rust开发者不再需要正确性测试，只需要测试实现是否正确即可。
+
+https://github.com/lengyijun/polonius-abella
+
+# 比较tricky的点
+表示否定。
+
+想知道在别的证明工具里是怎么描述这种对立关系的？

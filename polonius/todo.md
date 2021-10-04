@@ -47,9 +47,6 @@ placeholder
 `&*` 为什么会搞出一个 `path_assigned_at_base`?
  ~/polonius/inputs/smoke-test/nll-facts/foo
 
-# `datafrog_opt`
-怎么想出来的?
-如何证明和naive是等价的？
 
 # vec
 Vec<&S> 一定包含Origin，那么如果Vec pop一下，会不会把origin去掉呢？

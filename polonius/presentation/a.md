@@ -9,6 +9,8 @@ backgroundColor: #fff
 
 In Polonius (the new Rust borrow checker)
 
+By YIJUN Leng 
+
 ---
 # Borrow checker in Rust
 ```
@@ -144,12 +146,14 @@ A lot of under developing...
 
 --- 
 # Steps
-1. use abella to describe datalog
+1. use Abella to describe datalog
+1.1 input
+1.2 naive and datafrog-opt
 2. datafrog_opt_error => naive_error
 3. naive_error => datafrog_opt_error
 
 ---
-# Use abella to describe datalog
+# 1. Use Abella to describe datalog
 ```
 Kind origin type.
 Kind loan type.
@@ -165,7 +169,7 @@ Type subset_base origin -> origin -> point -> prop.
 
 ---
 
-# Use abella to describe datalog
+# 1. Use Abella to describe datalog
 ```
 Define  naive_subset: origin -> origin -> point -> prop,
         naive_origin_contains_loan_on_entry: origin -> loan -> point -> prop,
@@ -185,7 +189,7 @@ naive_subset Origin1  Origin2  Point2  :=
 ```
 
 ---
-# datafrog_opt_error => naive_error
+# 2. datafrog_opt_error => naive_error
 
 ```
 Theorem DatafrogOpt2Naive:
@@ -215,15 +219,74 @@ Theorem Lemma24:
 ```
 
 ---
-# naive_error => datafrog_opt_error
+# 3. naive_error => datafrog_opt_error
 
-![]( mysubset.drawio.png )
+![bg left:30% 100%]( mysubset.drawio.png )
+
+Things are complicated here.
+I have to define two intermediate rules:
+1. my_origin_contain_loan_on_entry
+2. my_subset 
+
+--- 
+# Benefit from my proof
+
+We don't need to worry about the correctness of datafrog-opt any more.
+Currently, we rely on a lot of tests to confirm the equivalence.
+
+Helpful to verify new datalog rules.
 
 ---
+
+# Why we need proof assistant?
+- Repeatability
+- Discover problem in proof
+
+--- 
+
 # Power of Abella
-We only use one third power of Abella.
+We only use a little power of Abella.
 
 Coinduction, pi ...
+
+---
+
+# Express negative in Abella
+
+```
+/* The only axiom introduced */
+Theorem Axiom2:                                                                                                    
+  forall Origin,                                                                                                   
+  forall Point,                                                                                                    
+  (origin_live_on_entry Origin Point ) \/ ( origin_live_on_entry Origin Point -> false).                           
+skip.
+```
+A function is the negative of fact!
+
+```
+H1: origin_live_on_entry Origin Point 
+H2: origin_live_on_entry Origin Point -> false
+```
+We can use `search` tactic to get false quickly.
+TODO: How to express three mutually exclusive states?
+
+---
+
+# Tricky things in Abella
+
+Both true and false!
+Abella will give a warning.
+
+```
+Define p : prop by
+p := p -> false .
+
+Theorem p_true : p .
+unfold . intros . case H1 ( keep ) . apply H2 to H1 .
+
+Theorem notp_true : p -> false .
+intros . case H1 ( keep ) . apply H2 to H1 .
+```
 
 ---
 
@@ -258,35 +321,31 @@ fn main() {
 }
 ```
 
+THINKING: compare with P5
+
 https://github.com/rust-lang/rust/issues/70797
 
-
---- 
-# Benefit of my proof
-
-We don't need to worry about the correctness of datafrog-opt.
-Currently, we rely on a lot of tests to confirm the equivalence.
-
-Helpful to verify new datalog rules.
+---
+# Future work
+Catch polonius developing
 
 ---
 
 # Datalog engines
-swi(scala)
+1. swi(scala)
 
-racket: 
+2. racket: 
 https://docs.racket-lang.org/datalog/Tutorial.html
 no negative？
 
-souffle (c++): parallel, Rust is using
+3. souffle (c++): parallel. Rust is using
 
-bddbddb (java): use binary decision diagram
+4. bddbddb (java): use binary decision diagram. Rely on NP problem.
 
-https://github.com/vmware/differential-datalog
-gnu-prolog gprolog (C)
-
-
+5. https://github.com/vmware/differential-datalog
+6. gnu-prolog gprolog (C)
 
 ---
+Full proof here: 
 https://github.com/lengyijun/polonius-abella
 --- 
