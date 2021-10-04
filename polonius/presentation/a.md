@@ -128,19 +128,26 @@ cargo  rustc  -- -Zpolonius
 // or
 rustc -Zpolonius main.rs 
 ```
-![width:500px](benchmark.png )
+![width:500px](polonius-benchmark.png )
 
 ![bg left:40% 80%](liveness.drawio.png )
 
 ---
-# Use proof assistant to prove naive = datafrog-opt
+In practise, naive = datafrog-opt.
+
+Intuitively, naive = datafrog-opt.
+
+But how do we formally prove it?
+
+---
+# Choose a proof assistant to prove naive = datafrog-opt
 
 - Isabella
 - Lean3 Lean4
 - lambda prolog
     Teyjus
     ELPI（OCaml）
-    **Abella（OCaml）**
+    **Abella（OCaml）**: suitable to express datalog
 
 A lot of under developing...
 
@@ -200,6 +207,21 @@ Theorem DatafrogOpt2Naive:
 ```
 
 ---
+# Two important inspection
+
+```
+/* Lemma24 */
+datafrog_opt_subset Origin1 Origin2 Point 
+=> naive_subset Origin1 Origin2 Point
+
+/* Lemma26 */
+datafrog_origin_contain_loan_on_entry Origin Loan Point
+=> naive_origin_contains_loan_on_entry Origin Loan Point
+```
+
+---
+# Prove Lemma24
+
 ```
 Theorem Lemma24:
   (
@@ -215,26 +237,100 @@ Theorem Lemma24:
     forall Origin2,
     dying_can_reach Origin1 Origin2 Point1 Point2  ->
     naive_subset Origin1 Origin2 Point1
-  )
+  ).
 ```
 
 ---
 # 3. naive_error => datafrog_opt_error
 
-![bg left:30% 100%]( mysubset.drawio.png )
+Can we follow the trick before?
+```
+/* Lemma25 */
+naive_subset Origin1 Origin9 Point
+=> datafrog_opt_subset Origin1 Origin9 Point 
 
-Things are complicated here.
-I have to define two intermediate rules:
-1. my_origin_contain_loan_on_entry
-2. my_subset 
+/* Lemma27 */
+naive_origin_contains_loan_on_entry Origin Loan Point
+=> datafrog_origin_contain_loan_on_entry Origin Loan Point
+```
+
+**WRONG!**
 
 --- 
-# Benefit from my proof
+
+```
+/* Lemma25 */
+naive_subset Origin1 Origin9 Point
+=> datafrog_opt_subset Origin2 Origin9 Point 
+
+/* Lemma27 */
+naive_origin_contains_loan_on_entry Origin9 Loan Point
+=> datafrog_origin_contain_loan_on_entry Origin2 Loan Point
+```
+
+**STILL WRONG!**
+
+Definitely, it's not trival to construct meaningful relationship from naive to datafrog-opt.
+
+---
+
+# How to deal with the gap?
+
+What if `naive_subset` is defined as ...
+Not extensible along Point
+
+```
+Define  my_subset: origin -> origin -> point -> prop,
+        my_origin_contains_loan_on_entry: origin -> loan -> point -> prop by
+
+my_subset Origin1  Origin2  Point  :=
+  datafrog_opt_subset Origin1  Origin2  Point ;
+
+my_subset Origin1  Origin3  Point  :=
+  exists Origin2,
+  datafrog_opt_subset Origin1  Origin2  Point /\
+  my_subset Origin2  Origin3  Point ;
+
+my_origin_contains_loan_on_entry Origin Loan Point  :=
+  datafrog_opt_origin_contains_loan_on_entry Origin Loan Point ;
+
+my_origin_contains_loan_on_entry Origin2  Loan  Point  :=
+  exists Origin1,
+  my_origin_contains_loan_on_entry Origin1  Loan  Point /\
+  datafrog_opt_subset Origin1  Origin2  Point .
+```
+
+---
+
+# Redefine naive_* with datafrog_opt_*
+
+my_origin_contain_loan_on_entry <=> naive_origin_contains_loan_on_entry 
+
+my_subset <=> naive_subset
+
+
+---
+# Conclusion
+
+We prove two algorithms in Polonius produce the same result, based on only one axiom.
+
+## Main tactic
+
+induction
+
+--- 
+# Benefit from this proof
 
 We don't need to worry about the correctness of datafrog-opt any more.
 Currently, we rely on a lot of tests to confirm the equivalence.
 
 Helpful to verify new datalog rules.
+
+---
+# Future work
+Catch up Polonius progress
+
+Make Polonius the default borrow checker of Rust
 
 ---
 
@@ -244,18 +340,11 @@ Helpful to verify new datalog rules.
 
 --- 
 
-# Power of Abella
-We only use a little power of Abella.
-
-Coinduction, pi ...
-
----
-
 # Express negative in Abella
 
 ```
 /* The only axiom introduced */
-Theorem Axiom2:                                                                                                    
+Theorem OriginLiveAxiom:                                                                                                    
   forall Origin,                                                                                                   
   forall Point,                                                                                                    
   (origin_live_on_entry Origin Point ) \/ ( origin_live_on_entry Origin Point -> false).                           
@@ -287,6 +376,15 @@ unfold . intros . case H1 ( keep ) . apply H2 to H1 .
 Theorem notp_true : p -> false .
 intros . case H1 ( keep ) . apply H2 to H1 .
 ```
+
+---
+
+# Power of Abella
+Abella is suitable to express datalog.
+
+But we only utilize a little functionality in Abella here.
+
+Coinduction, nable, pi calculas ...
 
 ---
 
@@ -325,9 +423,6 @@ THINKING: compare with P5
 
 https://github.com/rust-lang/rust/issues/70797
 
----
-# Future work
-Catch polonius developing
 
 ---
 
@@ -346,6 +441,13 @@ no negative？
 6. gnu-prolog gprolog (C)
 
 ---
+# Datalog engines
+
+![](datalog-benchmark.jpg )
+
+---
+# Q&A
+
 Full proof here: 
 https://github.com/lengyijun/polonius-abella
 --- 
