@@ -11,21 +11,30 @@ In Polonius (the new Rust borrow checker)
 
 ---
 # Borrow checker in Rust
-```cpp
-#include<iostream>
+```
+#include<iostream>     
 #include<vector>
 using namespace std;
 
-int main(){
-  vector<int> v={12};
-  auto x=&v[0];
-  cout<<*x<<endl;
-
-  v.reserve(100);
-  cout<<*x<<endl;
-}
+int main(){                          fn main() {            
+  vector<int> v={12};                    let mut v=vec![12];
+  auto x=&v[0];                          let x=&v[0];
+  cout<<*x<<endl;                        dbg!(x);
+                                     
+  v.reserve(100);                        v.reserve(100);
+  cout<<*x<<endl;                        dbg!(x);
+}                                    }                       
 ```
-![bg right:50% 70%]( 2021-10-04_08-02.png )
+
+
+
+
+
+
+
+
+
+
 
 ---
 
