@@ -10,6 +10,24 @@ backgroundColor: #fff
 In Polonius (the new Rust borrow checker)
 
 ---
+# Borrow checker in Rust
+```cpp
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int main(){
+  vector<int> v={12};
+  auto x=&v[0];
+  cout<<*x<<endl;
+
+  v.reserve(100);
+  cout<<*x<<endl;
+}
+```
+![bg right:50% 70%]( 2021-10-04_08-02.png )
+
+---
 
 # Datalog engines
 swi(scala)
@@ -93,7 +111,7 @@ fn get_or_insert<'a>(
     match HashMap::get(&*map, &22) {
         Some(v) => v,
         None => {
-            map.insert(22, String::from("hi"));
+            HashMap::insert(&mut *map, 22, String::from("hi"));
             &map[&22]
         }
     }
