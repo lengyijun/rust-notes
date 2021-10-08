@@ -43,10 +43,9 @@ int main(){                          fn main() {
 2     let mut v=vec![12];
 3     let x=&v[0];
 4     dbg!(x);
-5 
-6     v.reserve(100);
-7     dbg!(x);
-8 }                       
+5     v.reserve(100);
+6     dbg!(x);
+7 }                       
 ```
 
 ---
@@ -57,16 +56,15 @@ int main(){                          fn main() {
 2     let mut v=vec![12];
 3     let x=&v[0];
 4     dbg!(x);
-5 
-6     Vec::reserve(&mut v, 100);
-7     dbg!(x);
-8 }                       
+5     Vec::reserve(&mut v, 100);
+6     dbg!(x);
+7 }                       
 ```
 
 multiple immutable borrows / one mutable borrow 
 
-mutable borrow: L6 
-immutable borrow: L7 L6 L4
+mutable borrow: L5 
+immutable borrow: L6 L5 L4
 
 ---
 # The problem of NLL 
