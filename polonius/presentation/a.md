@@ -11,8 +11,10 @@ In Polonius (the new Rust borrow checker)
 
 By YIJUN Leng 
 
+<!-- this is a "speaker note" -->
+
 ---
-# Borrow checker in Rust
+# WARMUP: Compile pass? Run pass?
 ```
 #include<iostream>     
 #include<vector>
@@ -28,11 +30,11 @@ int main(){                          fn main() {
 }                                    }                       
 ```
 
-
 ---
-# How nll borrow checker work
-mutable borrow
-immutable borrow
+# How Rust borrow checker(NLL) work
+1. identify mutable/immutable borrow
+2. each borrow's live span (in lines)
+3. check conflict (mutable borrow and immutable borrow at same line)
 
 ```
 1 fn main() {            
@@ -46,7 +48,7 @@ immutable borrow
 ```
 
 ---
-# Desugared
+# Lightly desugared
 
 ```
 1 fn main() {            
@@ -65,7 +67,7 @@ mutable borrow: L6
 immutable borrow: L7 L6 L5 L4
 
 ---
-# The problem of nll 
+# The problem of NLL 
 
 ```rust
 fn get_or_insert(
@@ -101,7 +103,7 @@ error[E0502]: cannot borrow `*map` as mutable because also borrowed as immutable
 
 ---
 
-# Desugared 
+# Lightly desugared
 
 ```rust
 fn get_or_insert<'a>(
@@ -116,7 +118,7 @@ fn get_or_insert<'a>(
     }
 }
 ```
-https://nikomatsakis.github.io/rust-belt-rust-2019/#72
+https://nikomatsakis.github.io/rust-belt-rust-2019/
 https://www.youtube.com/watch?v=_agDeiWek8w&t=329s&ab_channel=RustBeltRustConference
 
 ---
@@ -128,26 +130,37 @@ cargo  rustc  -- -Zpolonius
 // or
 rustc -Zpolonius main.rs 
 ```
-![width:500px](polonius-benchmark.png )
+
+Polonius is based on datalog.
+
+Compiler team created two set of rules: naive and datafrog-opt.
+
+---
+![bg](naive.png )
+![bg](datafrog-opt.png )
+
+---
 
 ![bg left:40% 80%](liveness.drawio.png )
 
----
 In practise, naive = datafrog-opt.
 
-Intuitively, naive = datafrog-opt.
+In logic, naive = datafrog-opt (not intuitively)
 
 But how do we formally prove it?
 
+![width:500px](polonius-benchmark.png )
+
 ---
-# Choose a proof assistant to prove naive = datafrog-opt
+# Choose a proof assistant to prove equivalence of datalog rules
 
 - Isabella
+- Z3
 - Lean3 Lean4
 - lambda prolog
     Teyjus
-    ELPI（OCaml）
-    **Abella（OCaml）**: suitable to express datalog
+    ELPI(OCaml)
+    **Abella(OCaml)**: suitable to express datalog
 
 A lot of under developing...
 
@@ -241,6 +254,40 @@ Theorem Lemma24:
 ```
 
 ---
+
+# induction
+```
+Theorem even_odd : forall x , even x -> odd ( s x ) .
+```
+
+```
+induction on 1.
+```
+
+Induction on one rule.
+
+---
+
+# Mutual induction: break cyclic proof
+
+```
+Define even : nat -> prop ,
+       odd  : nat -> prop by
+even z ;
+even ( s N ) := odd N ;
+odd ( s N ) := even N .
+
+Theorem even_odd_nat :
+  ( forall N , even N -> is_nat N ) /\ 
+  ( forall N , odd N -> is_nat N ) .
+```
+
+```
+induction on 1 1.
+```
+
+
+---
 # 3. naive_error => datafrog_opt_error
 
 Can we follow the trick before?
@@ -257,6 +304,7 @@ naive_origin_contains_loan_on_entry Origin Loan Point
 **WRONG!**
 
 --- 
+# Try applying small patches...
 
 ```
 /* Lemma25 */
@@ -277,23 +325,17 @@ Definitely, it's not trival to construct meaningful relationship from naive to d
 # How to deal with the gap?
 
 What if `naive_subset` is defined as ...
-Not extensible along Point
+Should not extensible along Point
 
 ```
 Define  my_subset: origin -> origin -> point -> prop,
         my_origin_contains_loan_on_entry: origin -> loan -> point -> prop by
-
-my_subset Origin1  Origin2  Point  :=
-  datafrog_opt_subset Origin1  Origin2  Point ;
-
+my_subset Origin1  Origin2  Point  := datafrog_opt_subset Origin1  Origin2  Point ;
 my_subset Origin1  Origin3  Point  :=
   exists Origin2,
   datafrog_opt_subset Origin1  Origin2  Point /\
   my_subset Origin2  Origin3  Point ;
-
-my_origin_contains_loan_on_entry Origin Loan Point  :=
-  datafrog_opt_origin_contains_loan_on_entry Origin Loan Point ;
-
+my_origin_contains_loan_on_entry Origin Loan Point  := datafrog_opt_origin_contains_loan_on_entry Origin Loan Point ;
 my_origin_contains_loan_on_entry Origin2  Loan  Point  :=
   exists Origin1,
   my_origin_contains_loan_on_entry Origin1  Loan  Point /\
@@ -308,6 +350,34 @@ my_origin_contain_loan_on_entry <=> naive_origin_contains_loan_on_entry
 
 my_subset <=> naive_subset
 
+---
+
+```
+my_subset Origin1  Origin2  Point  := datafrog_opt_subset Origin1  Origin2  Point ;
+my_subset Origin1  Origin3  Point  :=
+  exists Origin2,
+  datafrog_opt_subset Origin1  Origin2  Point /\
+  my_subset Origin2  Origin3  Point ;
+```
+
+are similar to the classical recursive type definition:
+
+```
+Kind nat type.
+Type zero  nat.
+Type s nat -> nat.
+```
+
+```
+Kind list type .
+Type empty list.
+Type cons nat -> list -> list.
+```
+
+---
+# Reaction from community
+![](zulip.png)
+https://rust-lang.zulipchat.com/#narrow/stream/186049-t-compiler.2Fwg-polonius/topic/Prove.20equivalence.20between.20.20naive.20and.20datafrog-opt
 
 ---
 # Conclusion
@@ -316,25 +386,28 @@ We prove two algorithms in Polonius produce the same result, based on only one a
 
 ## Main tactic
 
-induction
+(mutual) induction
 
 --- 
 # Benefit from this proof
 
-We don't need to worry about the correctness of datafrog-opt any more.
-Currently, we rely on a lot of tests to confirm the equivalence.
+We don't need to test the correctness of datafrog-opt any more.
+We only need to test the implementation correctness.
 
-Helpful to verify new datalog rules.
+Helpful to verify new datalog rules before implementation.
 
 ---
 # Future work
-Catch up Polonius progress
+Another approach to prove?
 
-Make Polonius the default borrow checker of Rust
+# Personal future work 
+1. Work on mlsub
+2. Make Polonius the default borrow checker of Rust
 
 ---
 
 # Why we need proof assistant?
+- Succinctness
 - Repeatability
 - Discover problem in proof
 
@@ -343,7 +416,6 @@ Make Polonius the default borrow checker of Rust
 # Express negative in Abella
 
 ```
-/* The only axiom introduced */
 Theorem OriginLiveAxiom:                                                                                                    
   forall Origin,                                                                                                   
   forall Point,                                                                                                    
@@ -378,13 +450,28 @@ intros . case H1 ( keep ) . apply H2 to H1 .
 ```
 
 ---
+# Axiom in Abella
+```
+/* The only axiom introduced */
+Theorem OriginLiveAxiom:                                                                                                    
+  forall Origin,                                                                                                   
+  forall Point,                                                                                                    
+  (origin_live_on_entry Origin Point ) \/ ( origin_live_on_entry Origin Point -> false).                           
+skip.
+```
+`skip` is the only way to express axiom.
 
-# Power of Abella
+---
+
+# Abella is powerful
 Abella is suitable to express datalog.
 
 But we only utilize a little functionality in Abella here.
 
-Coinduction, nable, pi calculas ...
+Coinduction, nable, lambda calculas, pi calculas ...
+
+# But Abella can't prove any truth!
+Gödel's incompleteness theorems 
 
 ---
 
@@ -425,6 +512,16 @@ https://github.com/rust-lang/rust/issues/70797
 
 
 ---
+# What else can Polonius help?
+Clippy: safe move
+
+https://github.com/rust-lang/rust-clippy/issues/7459
+
+https://github.com/rust-lang/rust-clippy/issues/7512
+
+[redundant_clone](https://rust-lang.github.io/rust-clippy/master/index.html#redundant_clone)
+
+---
 
 # Datalog engines
 1. swi(scala)
@@ -450,4 +547,10 @@ no negative？
 
 Full proof here: 
 https://github.com/lengyijun/polonius-abella
+
+Welcome to reviewing.
+
 --- 
+Q1: Why not use Isabella ?
+
+A: I can't use Isablla.
