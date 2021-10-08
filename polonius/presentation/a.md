@@ -141,13 +141,14 @@ Compiler team created two set of rules: naive and datafrog-opt.
 
 ---
 
-![bg left:40% 80%](liveness.drawio.png )
+![bg left:35% 80%](liveness.drawio.png )
 
 In practise, naive = datafrog-opt.
 
 In logic, naive = datafrog-opt (not intuitively)
 
 But how do we formally prove it?
+(This problem is first proposed by me, and first solved by me.)
 
 ![width:500px](polonius-benchmark.png )
 
