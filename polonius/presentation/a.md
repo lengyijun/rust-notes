@@ -66,7 +66,7 @@ int main(){                          fn main() {
 multiple immutable borrows / one mutable borrow 
 
 mutable borrow: L6 
-immutable borrow: L7 L6 L5 L4
+immutable borrow: L7 L6 L4
 
 ---
 # The problem of NLL 
