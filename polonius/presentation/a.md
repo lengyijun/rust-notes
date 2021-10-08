@@ -11,7 +11,6 @@ In Polonius (the new Rust borrow checker)
 
 By YIJUN Leng 
 
-<!-- this is a "speaker note" -->
 
 ---
 # WARMUP: Compile pass? Run pass?
@@ -29,6 +28,9 @@ int main(){                          fn main() {
   cout<<*x<<endl;                        dbg!(x);
 }                                    }                       
 ```
+
+<!-- left cpp: can compile,  can't run -->
+<!-- right rust: can't compile -->
 
 ---
 # How Rust borrow checker(NLL) work
@@ -61,7 +63,7 @@ int main(){                          fn main() {
 8 }                       
 ```
 
-multiply immutable borrows / one mutable borrow 
+multiple immutable borrows / one mutable borrow 
 
 mutable borrow: L6 
 immutable borrow: L7 L6 L5 L4
@@ -152,10 +154,13 @@ But how do we formally prove it?
 
 ![width:500px](polonius-benchmark.png )
 
+<!-- compiler emit a lot of facts: loan_issued_at, subset_base, .. -->
+<!-- polonius take facts as input -->
+
 ---
 # Choose a proof assistant to prove equivalence of datalog rules
 
-- Isabella
+- Isabelle
 - Z3
 - Lean3 Lean4
 - lambda prolog
@@ -375,6 +380,15 @@ Type empty list.
 Type cons nat -> list -> list.
 ```
 
+--- 
+
+# Steps
+1. use Abella to describe datalog
+1.1 input
+1.2 naive and datafrog-opt
+2. datafrog_opt_error => naive_error (100 LOC)
+3. naive_error => datafrog_opt_error (400 LOC)
+
 ---
 # Reaction from community
 ![](zulip.png)
@@ -471,7 +485,7 @@ But we only utilize a little functionality in Abella here.
 
 Coinduction, nable, lambda calculas, pi calculas ...
 
-# But Abella can't prove any truth!
+# But Abella can't prove all truth !
 Gödel's incompleteness theorems 
 
 ---
@@ -552,6 +566,6 @@ https://github.com/lengyijun/polonius-abella
 Welcome to reviewing.
 
 --- 
-Q1: Why not use Isabella ?
+Q1: Why not use Isabelle ?
 
-A: I can't use Isablla.
+A: I can't use Isabelle.
