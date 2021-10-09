@@ -1,18 +1,31 @@
-Rust的新的borrow checker叫做polonius,使用datalog实现。
-目前有两套datalog规则：naive和datafrog-opt.
-datafrog-opt比naive运行的快一点。
+我来分享我在Polonius中做的形式化证明工作：
 
+Rust新的borrow checker叫做Polonius,使用datalog实现。(好奇有别的语言编译器里用datalog吗？)
+
+Polonius 里有两套datalog规则：naive和datafrog-opt.
+datafrog-opt和naive的功能应该是相同的（通过大量的测试验证过）。
+顾名思义，datafrog-opt比naive运行的快一点。
+
+我的工作：
 我用abella 证明了datafrog-opt 和 naive是等价的。
-从datafrog-opt =》 naive不算太难
-naive=》 datafrog-opt 不太直观。我定义了一套中间规则，才让他们连接起来。
+即datafrog-opt报的错和naive报的错是一样的。
 
-证明的主要技巧是induction和多个规则同时induction。
+即，如果datafrog-opt报一个错，naive也会报这个错；
+如果naive报一个错，datafrog-opt也会报这个错。
 
-有了这个证明之后，rust开发者不再需要正确性测试，只需要测试实现是否正确即可。
+从datafrog-opt => naive不算太难,用几个mutual induction就行了,100行的证明。
 
-https://github.com/lengyijun/polonius-abella
+naive => datafrog-opt is quite difficulty ! 400行的证明
 
-# 比较tricky的点
-表示否定。
+原因是naive的定义里不能找到最小不动点,无法induction。
+我定义了一套中间规则，让他和naive等价。
+然后又能连接到datafrog-opt,完成证明。
 
-想知道在别的证明工具里是怎么描述这种对立关系的？
+有了这个证明之后，
+理论意义是第一个形式化证明他们的等价性。
+实际意义是Rust设计者不再需要正确性测试，只需要测试实现是否正确即可。
+
+最后感谢@洪谦 给我的提示用lambda prolog。 
+
+
+做了一个面向beginner的ppt
