@@ -42,3 +42,11 @@ fn main() {
 
     drop(y.0);
 }
+
+fn main(){
+    let x = &mut 2;  // subset('L_2, 'x)
+    let y = &mut *x; // subset('L_*x, 'y), subset('x, 'L_*x) by unrolling
+    *y = *x;         // Read of `*x` invalidates 'L_*x invalidates 'y
+    // Write to `y` accesses 'y
+}
+
