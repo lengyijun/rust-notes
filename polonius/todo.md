@@ -48,9 +48,6 @@ placeholder
  ~/polonius/inputs/smoke-test/nll-facts/foo
 
 
-# vec
-Vec<&S> 一定包含Origin，那么如果Vec pop一下，会不会把origin去掉呢？
-能不能构造出一些问题呢？
 
 # 如果参数里有一堆&&&&，那会不会有一大堆placeholder
 

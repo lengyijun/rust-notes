@@ -129,8 +129,11 @@ context insensitive
 
 
 polonius 既有反向的规则传播（liveness），也有正向的传播，比如subset
+在 polonius.next 中，只有正向传播。（可能便于摆脱prolog）
 
 * 原则
 对于一个loan，要记录所有包含这个loan的origin。因为任何一个origin都可能失效
 
+loan 总是有名的。loan 一定与_1, _2 , .... 相关联
+origin 可能是匿名的，临时的
 
