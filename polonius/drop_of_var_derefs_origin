@@ -1,0 +1,40 @@
+# 要怎样才能生成 drop_of_var_derefs_origin
+
+
+```
+use std::collections::binary_heap::BinaryHeap ;
+
+fn main() {
+    let mut heap = BinaryHeap::new();
+    if let Some(_) = heap.peek_mut() {
+            heap.push(4);
+        };
+}
+```
+
+这个origin同时是 `drop_of_var_derefs_origin` 和 `use_of_var_derefs_origin`
+
+
+```
+struct S<'a>{
+    x:&'a str
+}
+
+impl <'a> Drop for S<'a>{
+    fn drop(&mut self){
+    }
+}
+
+fn main() {
+    let s=S{x:""};
+}
+```
+
+其实 只要实现了drop就会有
+
+但是Box实现了，不过里面还是空的。
+
+
+但是只要将这个有drop的变量move到函数的参数中，
+就不会有 `drop_of_var_derefs_origin`
+
