@@ -1,0 +1,33 @@
+There two folder of hrtb test : 
+~/rust/src/test/ui/hrtb
+~/rust/src/test/ui/higher-rank-trait-bounds
+
+The principal form of HRTB:
+1. in fn
+```
+fn foo<T> (t:T) where T : for<'a> Into<&'a u8>{ }
+```
+
+2. in struct
+```
+struct S<T>  where T : for<'a> Into<&'a u8> { t : T }
+```
+
+3. in trait
+```
+trait T : for<'a> Into<&'a u8> {}
+trait T<U> where U : for<'a> Into<&'a u8>{ }
+```
+
+4. in impl
+```
+trait T<U>{}
+struct S;
+impl<U> T<U> for S where U : for<'a> Into<&'a u8>{ }
+```
+
+```
+impl T for S where S : for<'a> Into<&'a u8> {}
+impl<U> T for S<U> where U : for<'a> Into<&'a u8> {}
+```
+
