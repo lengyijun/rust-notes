@@ -31,3 +31,6 @@ impl T for S where S : for<'a> Into<&'a u8> {}
 impl<U> T for S<U> where U : for<'a> Into<&'a u8> {}
 ```
 
+# Question
+hrtb-debruijn-in-receiver.rs : is it really related to HRTB ? 
+
