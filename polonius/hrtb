@@ -1,0 +1,21 @@
+complex.rs : quite complex
+due-to-where-clause.rs : no function involved, only about struct, very special
+hrtb-cache-issue-54302.rs
+hrtb-conflate-regions.rs
+hrtb-debruijn-in-receiver.rs
+hrtb-exists-forall-fn.rs
+hrtb-exists-forall-trait-contravariant.rs
+hrtb-exists-forall-trait-covariant.rs
+hrtb-exists-forall-trait-invariant.rs
+hrtb-higher-ranker-supertraits.rs
+hrtb-higher-ranker-supertraits-transitive.rs
+hrtb-identity-fn-borrows.rs
+hrtb-just-for-static.rs
+hrtb-perfect-forwarding.rs
+issue-30786.rs
+issue-46989.rs
+issue-57639.rs
+issue-58451.rs
+issue-62203-hrtb-ice.rs
+issue-88446.rs
+issue-90177.rs

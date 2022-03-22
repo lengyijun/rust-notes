@@ -1,0 +1,6 @@
+# https://github.com/JakobDegen/mir-docs/blob/master/mir-in-the-compiler.md
+# read the memory of a u32 as an i32
+let x: u32 = 100;
+let p: *const i32 = &x as *const u32 as *const i32;
+let y: i32 = unsafe { *p };
+# 然而这段代码在mir中不能被优化
