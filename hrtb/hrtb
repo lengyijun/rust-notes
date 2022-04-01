@@ -46,3 +46,8 @@ hrtb-debruijn-in-receiver.rs : is it really related to HRTB ?
 `for<'a> fn(&'a u8)` 总是可以缩写成 `fn (& u8)`
 `for<'a'> Into<&'a u8>` 不能缩写成 `Into<& u8>`
 
+
+fn(&'empty i32) = for<'a> fn(&'a i32)
+  fn(&'empty i32) <: for<'a> fn(&'a i32)
+  for<'a> fn(&'a i32) <: fn(&'empty i32)
+
