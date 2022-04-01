@@ -142,3 +142,22 @@ fn main() {
 释放时机不同。Rc用计数器决定释放。& 用nll决定释放
 Rc分配在heap上，& stack上
 
+
+## Rc<T> 的长度
+```
+[src/main.rs:10] mem::size_of::<&str>() = 16
+[src/main.rs:11] mem::size_of::<Rc<str>>() = 16
+[src/main.rs:12] mem::size_of::<Rc<&str>>() = 8
+[src/main.rs:14] mem::size_of::<Box<&str>>() = 8
+[src/main.rs:15] mem::size_of::<Box<str>>() = 16
+[src/main.rs:16] mem::size_of::<Rc<Box<str>>>() = 8
+[src/main.rs:18] mem::size_of::<String>() = 24
+[src/main.rs:19] mem::size_of::<Rc<String>>() = 8
+[src/main.rs:21] mem::size_of::<Rc<[u8]>>() = 16
+[src/main.rs:22] mem::size_of::<Rc<&[u8]>>() = 8
+```
+
+如果T的长度是确定的，（包括瘦指针）（和胖指针）（&str， Box<str>, &[u8], String）, `size_of Rc<T> = 8`
+
+如果T的长度不是确定的，（DST）（str， [u8]  ）, `size_of Rc<T> = 16`
+
