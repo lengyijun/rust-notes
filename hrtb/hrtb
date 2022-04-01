@@ -31,6 +31,18 @@ impl T for S where S : for<'a> Into<&'a u8> {}
 impl<U> T for S<U> where U : for<'a> Into<&'a u8> {}
 ```
 
+5. in fn
+```
+impl T for for<'a> fn(&'a u8) {}
+
+// equal to
+impl T for fn(& u8) {}
+```
+
 # Question
 hrtb-debruijn-in-receiver.rs : is it really related to HRTB ? 
+
+
+`for<'a> fn(&'a u8)` 总是可以缩写成 `fn (& u8)`
+`for<'a'> Into<&'a u8>` 不能缩写成 `Into<& u8>`
 
