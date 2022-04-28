@@ -21,4 +21,23 @@ cargo rustc  -- --emit mir
 
 
 mir 中看不到是不是unsafe。unsafe只能在hir中判断
+unsafe的函数，会正常的翻译到mir。
+```
+fn main(){}
+
+unsafe fn swap(x :  *mut u32,  y : *mut u32){
+    let z = *x;
+    *x = *y;
+    *y = z;
+}
+
+unsafe fn foo(){
+    let mut x : u32 = 0;
+    let a : * mut u32 = &mut x as * mut u32;
+    let b : * mut u32 = &mut x as * mut u32;
+    *a = 1;
+    *b = 2;
+    *a = 3;
+}
+```
 
