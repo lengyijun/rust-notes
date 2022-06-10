@@ -82,4 +82,6 @@ y的生命周期是`'static`  的subtype
 
 
 
+src/test/ui/variance/variance-regions-direct.rs 提供了调试invariance的方法
+
 https://doc.rust-lang.org/nomicon/subtyping.html
