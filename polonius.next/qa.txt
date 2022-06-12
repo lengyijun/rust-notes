@@ -1,2 +1,4 @@
 introduce_loan 和 loan_issued_at 是一样的吗？
+Answer : 应该是一样的
+
 
