@@ -23,7 +23,7 @@ fn ff(x: &mut Animal)里，传一个&mut Cat就问题很大，因为可能会把
 |   | `Vec<T>`        |           | covariant         |           |
 | * | `UnsafeCell<T>` |           | invariant         |           |
 |   | `Cell<T>`       |           | invariant         |           |
-| * | `fn(T) -> U`    |           | **contra**variant | covariant |
+| * | `fn(T) -> U`    |           | contravariant     | covariant |
 |   | `*const T`      |           | covariant         |           |
 |   | `*mut T`        |           | invariant         |           |
 
@@ -31,16 +31,16 @@ fn ff(x: &mut Animal)里，传一个&mut Cat就问题很大，因为可能会把
 
 用具体的例子：
 
-|SubType | SyperType | Right？  |
-| -------| --------- | -------- |
-|Cat     | Animal    | ok |
-|&Cat | &Animal | ok |
-|&mut Cat | &mut Animal | false |
-|&mut Animal | &mut Cat | false |
-|Box<Cat> | Box<Animal> | ok |
-|Vec<Cat> | Vec<Animal> | ok |
-|Cell<Cat> | Cell<Animal> | false |
-|Cell<Animal> | Cell<Cat> | false |
+|SubType      | SyperType    | Right？  |
+| -------     | ---------    | -------- |
+|Cat          | Animal       | ok       |
+|&Cat         | &Animal      | ok       |
+|&mut Cat     | &mut Animal  | false    |
+|&mut Animal  | &mut Cat     | false    |
+|Box<Cat>     | Box<Animal>  | ok       |
+|Vec<Cat>     | Vec<Animal>  | ok       |
+|Cell<Cat>    | Cell<Animal> | false    |
+|Cell<Animal> | Cell<Cat>    | false    |
 
 
 
@@ -80,6 +80,7 @@ y的生命周期是`'static`  的subtype
 
 但显然y的生命周期很短，所以会报错。
 
+注意：&mut x 引入了一个invariance，所以T被马上确定好了
 
 
 src/test/ui/variance/variance-regions-direct.rs 提供了调试invariance的方法
