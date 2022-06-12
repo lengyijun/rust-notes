@@ -21,7 +21,17 @@ This example can't compile with `rustc main.rs -Zpolonius` .
 
 ## Note
 This counterexample has many variants.
-`x=vec![&22];`
+
+```
+1 fn main() {
+2     let mut x = vec![&22];
+3     let mut z = 44;
+4     let y = x[0];
+5     x[0] = &z;
+6     z += 1;
+7     y;
+8 }
+```
 
 虽然原因各不相同，有些不是var live,而是有个origin还活着。
 但是无论如何，都导致了类似的错误
