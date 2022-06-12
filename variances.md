@@ -88,6 +88,7 @@ y的生命周期是`'static`  的subtype
 注意trait的比较不是variance的部分，是chalk，查询的部分，算法不一样
 
 
+associated types are invariant
 
 src/test/ui/variance/variance-regions-direct.rs 提供了调试invariance的方法
 
