@@ -83,6 +83,12 @@ y的生命周期是`'static`  的subtype
 注意：&mut x 引入了一个invariance，所以T被马上确定好了
 
 
+所有的variance，最后都会归结到lifetime的比较？
+注意trait的比较不是variance的部分，是chalk，查询的部分，算法不一样
+
+
+
 src/test/ui/variance/variance-regions-direct.rs 提供了调试invariance的方法
 
 https://doc.rust-lang.org/nomicon/subtyping.html
+
