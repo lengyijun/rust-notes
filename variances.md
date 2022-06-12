@@ -15,19 +15,20 @@ fn ff(x: &mut Animal)里，传一个&mut Cat就问题很大，因为可能会把
 那么到底 & T，&mut T的variance和T是什么关系？有三种可能covariant,invariant,contravariant.
 
 
-|   |                 |     'a    |         T         |     U     |
-|---|-----------------|:---------:|:-----------------:|:---------:|
-| * | `&'a T `        | covariant | covariant         |           |
-| * | `&'a mut T`     | covariant | invariant         |           |
-| * | `Box<T>`        |           | covariant         |           |
-|   | `Vec<T>`        |           | covariant         |           |
-| * | `UnsafeCell<T>` |           | invariant         |           |
-|   | `Cell<T>`       |           | invariant         |           |
-| * | `fn(T) -> U`    |           | contravariant     | covariant |
-|   | `*const T`      |           | covariant         |           |
-|   | `*mut T`        |           | invariant         |           |
+|   |                      |     'a    |         T         |     U     |
+|---|--------------------- |:---------:|:-----------------:|:---------:|
+| * | `&'a T `             | covariant | covariant         |           |
+| * | `&'a mut T`          | covariant | invariant         |           |
+| * | `Box<T>`             |           | covariant         |           |
+|   | `Vec<T>`             |           | covariant         |           |
+| * | `UnsafeCell<T>`      |           | invariant         |           |
+|   | `Cell<T>`            |           | invariant         |           |
+| * | `fn(T) -> U`         |           | contravariant     | covariant |
+|   | `*const T`           |           | covariant         |           |
+|   | `*mut T`             |           | invariant         |           |
+|   | Box<dyn Trait<T>>[1] |           | invariant         |           |
 
-
+[1]: rust/src/test/ui/variance/variance-covariant-arg-object.rs
 
 用具体的例子：
 
