@@ -64,18 +64,22 @@ fn main() {
   let a = 1;
   let mut b = 2;
 
-  let mut aa = &a;
+  let mut p1 = &a;
 
-  let x = &*aa;
+  let p2 = &*p1;
 
-  mem::replace(&mut aa, &b);  // should generate clear_origin ?
+  mem::replace(&mut p1, &b);  // should generate clear_origin ?
   b += 1;
 
-  x;
+  p2;
 }
 ```
 
-这个replace 修改了 aa 指向，终止了 aa 与 x 关系。
+这个replace 修改了 p1 指向，终止了 p1 与 p2 关系。
+
+
+
+
 
 以下语句都应该生成 clear_origin Origin(_1): 
 
