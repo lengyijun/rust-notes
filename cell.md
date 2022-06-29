@@ -26,5 +26,15 @@ pub fn set(&self, val: T)
 pub fn replace(&self, val: T) -> T
 ```
 
-Refcell 开销比 cell 大一点
+Refcell 开销比 Cell 大一点
+
+Cell  线程不安全 
+
+Cell  是转化 mut 和 非mut 之间的魔法
+如果签名要求非mut,但是你又非要mut,那么Cell可能就要用到 
+
+shared references may not be used to perform mutation except when the mutation happens łinsidež an UnsafeCell.
+
+Cell 不提供内部的指针
+RefCell 提供内部的指针
 
