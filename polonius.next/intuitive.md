@@ -38,6 +38,7 @@ This counterexample has many variants.
 
 
 ```
+// -Zpolonius work
 fn main(){
     let mut a = 0;
     let mut x = &mut a;
@@ -50,3 +51,4 @@ fn main(){
     y;
 }
 ```
+
