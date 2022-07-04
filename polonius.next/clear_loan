@@ -6,3 +6,7 @@ y = &x     // 这个loan  以后会被 invalidate
 *x 借出去的  clear_loan
 x  借出去的  invalidate_loan
 
+1. x : &u8
+2. y = &'L1 *x
+3. x = ...  // at this point, clear_loan L1
+
