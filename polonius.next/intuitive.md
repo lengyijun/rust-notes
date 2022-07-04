@@ -3,8 +3,8 @@
 ```
 1 fn main() {
 2     let mut x: (&u32,) = (&22,);
-3     let mut z = 44;
-4     let y = x.0;  // let y = &* x.0;
+3     let y = x.0;  // let y = &* x.0;
+4     let mut z = 44;
 5     x.0 = &z;
 6     z = 1;
 7     y;
