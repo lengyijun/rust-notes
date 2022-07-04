@@ -1,0 +1,10 @@
+x = y         (y : &T)
+x = y         (y : &mut T)
+x = &* y      (y : &T/&mut T)
+x = &mut *y   (y : &mut T)
+
+这些语句内部都有 variance 的计算 
+只不过我们手工帮他计算了
+
+没有variance, 我都不知道怎么计算 范型参数里的 lifetime 关系
+
