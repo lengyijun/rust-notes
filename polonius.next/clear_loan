@@ -1,0 +1,8 @@
+x : &u8
+
+y = &(*x)  // 这个loan  以后会被 clear_loan
+y = &x     // 这个loan  以后会被 invalidate 
+
+*x 借出去的  clear_loan
+x  借出去的  invalidate_loan
+
