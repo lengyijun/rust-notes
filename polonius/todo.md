@@ -70,6 +70,7 @@ a=&2;  // origin a live again
 a;
 ```
 
-# const fn                 
-const fn 和polonius什么关系？
+Q: const fn 和polonius什么关系？
+A: 没有关系
+const fn 也可以在运行时执行
 
