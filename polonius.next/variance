@@ -8,3 +8,18 @@ x = &mut *y   (y : &mut T)
 
 没有variance, 我都不知道怎么计算 范型参数里的 lifetime 关系
 
+------------------------
+
+```
+a : && u8
+b : && u8
+
+b = a;
+```
+
+a : '13r '14r
+b : '16r '17r
+
+subset '13r '16r
+subset '14r '17r
+
