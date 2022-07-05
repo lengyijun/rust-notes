@@ -38,3 +38,7 @@ shared references may not be used to perform mutation except when the mutation h
 Cell 不提供内部的指针
 RefCell 提供内部的指针
 
+
+Cell<u8> 和 u8 几乎一样
+&Cell<u8> 和 &u8 很不一样
+
