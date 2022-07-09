@@ -98,3 +98,8 @@ _1 = call()
 # 缺点
 1. origin_invalidated 数量太多
 
+
+1. 计算 liveness
+2. 计算 subset
+3. 计算 invalidate
+
