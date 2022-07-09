@@ -95,3 +95,6 @@ _1 = call()
 | mem::replace(_1, _2) | clear_origin _1 指向的东西的所有Origin | 如何表达？                               |
 |                      |                                        | 所有call内部改变指向的，都要clear origin |
 
+# 缺点
+1. origin_invalidated 数量太多
+
