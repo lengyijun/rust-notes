@@ -97,3 +97,19 @@ src/test/ui/variance/variance-regions-direct.rs 提供了调试invariance的方�
 
 https://doc.rust-lang.org/nomicon/subtyping.html
 
+```
+/// The `Context` of an asynchronous task.
+///
+/// Currently, `Context` only serves to provide access to a `&Waker`
+/// which can be used to wake the current task.
+#[stable(feature = "futures_api", since = "1.36.0")]
+pub struct Context<'a> {
+    waker: &'a Waker,
+    // Ensure we future-proof against variance changes by forcing
+    // the lifetime to be invariant (argument-position lifetimes
+    // are contravariant while return-position lifetimes are
+    // covariant).
+    _marker: PhantomData<fn(&'a ()) -> &'a ()>,
+}
+```
+
