@@ -137,3 +137,21 @@ polonius 既有反向的规则传播（liveness），也有正向的传播，比
 loan 总是有名的。loan 一定与_1, _2 , .... 相关联
 origin 可能是匿名的，临时的
 
+
+```
+// https://blog.rust-lang.org/2022/08/05/nll-by-default.html
+fn last_or_push<'a>(vec: &'a mut Vec<String>) -> &'a String {
+    if let Some(s) = vec.last() { // borrows vec
+        // returning s here forces vec to be borrowed
+        // for the rest of the function, even though it
+        // shouldn't have to be
+        return s;
+    }
+
+    // Because vec is borrowed, this call to vec.push gives
+    // an error!
+    vec.push("".to_string()); // ERROR
+    vec.last().unwrap()
+}
+```
+
