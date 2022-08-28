@@ -36,19 +36,3 @@ This counterexample has many variants.
 虽然原因各不相同，有些不是var live,而是有个origin还活着。
 但是无论如何，都导致了类似的错误
 
-
-```
-// -Zpolonius work
-fn main(){
-    let mut a = 0;
-    let mut x = &mut a;
-    let y = &mut *x;
-
-    let mut b=0;
-    x=&mut b;
-    b;
-
-    y;
-}
-```
-
