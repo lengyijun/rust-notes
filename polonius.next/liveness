@@ -1,0 +1,3 @@
+有环的时候，liveness 才有用 
+线性程序， 不需要 liveness
+
