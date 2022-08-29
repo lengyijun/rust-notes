@@ -36,3 +36,17 @@ This counterexample has many variants.
 虽然原因各不相同，有些不是var live,而是有个origin还活着。
 但是无论如何，都导致了类似的错误
 
+
+According to 
+https://rust-lang.zulipchat.com/#narrow/stream/186049-t-compiler.2Fwg-polonius/topic/2022-08/near/295735542
+
+next一开始是想取消反向传播的liveness,
+但是现在 next 依然有liveness。
+
+线性程序不需要liveness,
+但是环状程序需要liveness
+
+可以对不同的程序用不同的规则
+有环状一定要分析liveness
+没有环状就不用分析liveness 了
+
