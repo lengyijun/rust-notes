@@ -30,3 +30,22 @@ let b=Box::new([0;5<<20]);
 在写法2中，_4 是一个分配在stack上的变量，所以会stack overflow
 
 在写法1中，所有的变量都在heap上，所以没有问题
+
+# box size
+box 的一大用处是减小体积 
+
+https://github.com/rust-lang/rust-clippy/issues/9392
+
+```
+use std::mem;
+use std::collections::HashSet;
+
+fn main(){
+    assert_eq!(48, mem::size_of::<HashSet<i32>>());
+    assert_eq!(24, mem::size_of::<Vec<i32>>());
+    assert_eq!(8, mem::size_of::<Box<HashSet<i32>>>());
+}
+```
+
+通过额外的heap 分配，使指针变短
+
