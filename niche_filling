@@ -1,0 +1,24 @@
+use std::num::NonZeroU32;
+use std::mem;
+
+type A = Option<NonZeroU32>;
+type B = Result<NonZeroU32, ()>;
+type C = Result<(), NonZeroU32>;
+enum NonNonZeroU32 {
+    Zero,
+    NonZero(NonZeroU32)
+}
+
+fn main(){
+     assert_eq!(4, mem::size_of::<A>());
+     assert_eq!(4, mem::size_of::<B>());
+     assert_eq!(4, mem::size_of::<C>());
+     assert_eq!(4, mem::size_of::<NonNonZeroU32>());
+}
+
+// 因为没有0
+// 所以把0 当作 None
+
+// 把空指针全0， 当作 None
+(size_of::<Option<Box<u64>>>(), size_of::<Box<u64>>()) // (8, 8)
+
