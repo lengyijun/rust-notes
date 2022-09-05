@@ -1,0 +1,18 @@
+fn foo(x : &mut u32, y : &mut u32 ) -> u32{
+    *x = 99;
+    *y=42;
+    *x
+}
+
+fn main() {
+   let mut x = 0u32;
+   let  y : *mut u32  = &mut x;
+   let a :  &mut u32 = unsafe{&mut *y};
+   let b :  &mut u32 = unsafe {&mut *y};
+   let z = foo(a, b);
+   println!("{}",z);
+}
+
+// rust release 约等于 gcc -O3
+// 所以会有过度优化导致错误的可能
+
