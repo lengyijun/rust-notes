@@ -8,3 +8,27 @@ invalidated 也是遗传病，会往下传
 liveness是遗传病，会往上传
 但liveness不是传染病，不会传给别的origin
 
+
+invalidate_origin 和 access_origin 可能共存吗？
+可能的
+
+```
+fn main(){
+    let mut x = 1;
+    let mut y = &mut x;
+    let mut z = &mut x;
+    y = z;
+    z = y;
+}
+```
+
+```
+fn main(){
+    let mut x = 1;
+    let mut y = &mut x;
+    let mut z = &mut* y;
+    y = z;
+    z = y;
+}
+```
+
