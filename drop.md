@@ -16,3 +16,12 @@
 
 在mir中可以看到： SimplifyCfg-elaborate-drops.after.dot 
 
+## drop flag
+
+https://doc.rust-lang.org/nomicon/drop-flags.html
+
+虽说rust 中静态的成分多，不过还是有动态的
+
+https://www.thecodedmessage.com/posts/raii/
+这里也有提到
+
