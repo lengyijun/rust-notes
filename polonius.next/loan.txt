@@ -1,0 +1,3 @@
+loan 也会被 clear_origin, 会被 invalidate_origin
+但不会 access_origin
+
