@@ -14,3 +14,7 @@ struct C<X,Y:A<X>,T:B<X,Y>>{
 
 如果没有phantom这两个field，那么会报错
 
+
+https://github.com/rust-lang/rust/issues/102810
+PhantomData is less like Box<T> and more like [T; 0].
+
