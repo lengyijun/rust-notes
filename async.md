@@ -28,3 +28,6 @@ It is recommended to measure performance for your application when you are choos
 
 async 块里一定要有 .awaits 
 
+https://www.zhihu.com/question/556880425
+rust 有实现有栈协程的能力，但由于原子性和安全性的冲突、空间利用率、堆分配等问题，最后胜出的是无栈协程。
+
