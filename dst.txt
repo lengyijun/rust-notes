@@ -1,0 +1,33 @@
+# What is DST?
+- [u8]
+- dyn T
+
+Notice: &[u8] 不是 DST
+Notice: &dyn T 不是 DST
+
+Structs may contain a DST as the last field; this makes the struct itself a DST.
+
+```
+// ok
+struct S{
+  x : dyn Debug
+}
+
+// error
+struct S{
+  x : dyn Debug,
+  y : dyn Debug
+}
+
+// ok
+struct S{
+  x : [u8]
+}
+
+// error
+struct S{
+  x : [u8],
+  y : [u8]
+}
+```
+
