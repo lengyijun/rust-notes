@@ -9,6 +9,7 @@ liveness是遗传病，会往上传
 但liveness不是传染病，不会传给别的origin
 
 
+// 以下好像不太对
 invalidate_origin 和 access_origin 可能共存吗？
 可能的
 
