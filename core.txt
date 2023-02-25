@@ -1,0 +1,3 @@
+libcore doesn’t have a concept of a memory allocator. 
+It relies purely on stack allocation.
+
