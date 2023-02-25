@@ -1,0 +1,3 @@
+https://github.com/rust-lang/rust/issues/25860
+https://crates.io/crates/fake-static
+
