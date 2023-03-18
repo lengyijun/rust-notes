@@ -65,6 +65,10 @@ fn main() {
 
 ```
 
+```
+let zero  = Box::<[u8; 50000000]>::new_zeroed();
+```
+
 或者用一个macro代替
 ```
 macro_rules! rc {
