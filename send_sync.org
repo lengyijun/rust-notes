@@ -17,3 +17,5 @@
 |               |               |               |
 
 
+a good blog:
+https://onesignal.com/blog/thread-safety-rust/
