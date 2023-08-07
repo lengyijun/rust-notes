@@ -19,3 +19,6 @@
 
 a good blog:
 https://onesignal.com/blog/thread-safety-rust/
+
+ThreadLocalStorage is not Send
+https://www.youtube.com/watch?v=ja_cdKF72vU&list=PL5aMzERQ_OZ9j40DJNlsem2qAGoFbfwb4&index=14&ab_channel=KAISTConcurrencyandParallelismLaboratory

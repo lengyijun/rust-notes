@@ -13,3 +13,7 @@
 
 Pin<P> wraps a pointer type P (e.g. &mut T, Box<T>)
 
+pin 是一种介于 &mut T 和 &T 之间的只能指针
+- 此值可以修改
+- 此值无法移动
+

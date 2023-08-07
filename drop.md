@@ -25,3 +25,10 @@ https://doc.rust-lang.org/nomicon/drop-flags.html
 https://www.thecodedmessage.com/posts/raii/
 这里也有提到
 
+
+---- 
+
+Drop trait
+常用函数
+- mem::take
+

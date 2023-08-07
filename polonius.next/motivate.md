@@ -50,3 +50,6 @@ next一开始是想取消反向传播的liveness,
 有环状一定要分析liveness
 没有环状就不用分析liveness 了
 
+## polonius.next 如何回避这个问题
+似乎是 clear_origin 打破了 subset 的传递
+
