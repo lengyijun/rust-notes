@@ -49,3 +49,50 @@ fn main(){
 }
 ```
 
+impl 只是影响使用
+dyn 是影响内存分配的
+
+
+```
+trait Trait {}
+
+fn foo(arg: impl Trait) {
+}
+
+struct S;
+
+impl Trait for S{}
+
+impl Trait for Box<dyn Trait> {}
+
+fn main(){
+   let s : Box<dyn Trait> = Box::new(S);
+    // let s = S;
+    foo(s);
+}
+```
+
+------
+
+async fn f(…) -> Ret
+
+is sugar for 
+
+fn f(…) -> impl Future<Output = Ret>
+
+
+--- 
+
+dyn 允许异构集合
+file:///home/lyj/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc/rust/html/book/ch17-02-trait-objects.html#using-trait-objects-that-allow-for-values-of-different-types
+
+
+--- 
+
+dyn 相当于存在量词
+
+https://rust-lang.github.io/a-mir-formality/blog
+
+## dyn 详解
+https://quinedot.github.io/rust-learning/dyn-trait.html
+
